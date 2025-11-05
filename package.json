@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "insert-plants": "tsx scripts/insert-plants.ts",
+    "backfill": "tsx scripts/backfill-historical.ts",
+    "backfill:test": "tsx scripts/backfill-historical.ts --test"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.79.0",
@@ -19,9 +22,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.2.3",
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
     "tailwindcss": "^4",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   }
 }
