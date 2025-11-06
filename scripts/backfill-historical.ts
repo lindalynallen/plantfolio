@@ -15,7 +15,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-const HISTORICAL_PHOTOS_DIR = path.join(__dirname, '..', '..', 'historical-plant-photos')
+const HISTORICAL_PHOTOS_DIR = path.join(__dirname, '..', 'data', 'historical-plant-photos')
 
 // Support test mode via command line argument
 const isTestMode = process.argv.includes('--test')

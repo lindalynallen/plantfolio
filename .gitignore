@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Data files (not committed to git)
+# Historical photos and Planta API responses - stored in Supabase, not needed in git
+/data/

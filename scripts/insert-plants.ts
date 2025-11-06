@@ -19,8 +19,8 @@ async function main() {
 
   try {
     // Load both API response pages
-    const page1 = require('../../response_1762303835488.json')
-    const page2 = require('../../response_1762303871695.json')
+    const page1 = require('../data/planta-api-responses/response_1762303835488.json')
+    const page2 = require('../data/planta-api-responses/response_1762303871695.json')
     const allPlants = [...page1.data, ...page2.data]
 
     console.log(`📥 Found ${allPlants.length} plants from Planta API\n`)
