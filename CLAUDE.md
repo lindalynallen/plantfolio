@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Plantfolio is a personal plant gallery website showcasing 54+ houseplants with historical photos and automated sync from the Planta mobile app API.
 
-**Tech Stack:** Next.js 16, TypeScript, Tailwind CSS, Supabase (PostgreSQL + Storage)
+**Tech Stack:** Next.js, TypeScript, Tailwind CSS, Supabase (PostgreSQL + Storage)
 
 **Current Status:** Backend complete (EPICs 1-2), Frontend in progress (EPIC 3+)
 

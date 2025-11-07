@@ -87,27 +87,35 @@
 - ✅ Dev server restarts successfully
 
 ---
-
 ### Task 1.5: Configure Next.js Image Domains
 - [ ] Open or create `next.config.js` in project root
-- [ ] Add Supabase domain to image configuration:
+- [ ] Add Supabase domain to image configuration using `remotePatterns` (Next.js 13+ standard):
   ```javascript
   /** @type {import('next').NextConfig} */
   const nextConfig = {
     images: {
-      domains: ['YOUR_PROJECT_REF.supabase.co'], // Replace with your actual project ref
+      remotePatterns: [
+        {
+          protocol: 'https',
+          hostname: 'YOUR_PROJECT_REF.supabase.co', // Replace with your actual project ref
+          pathname: '/storage/v1/object/public/**',
+        },
+      ],
     },
   }
 
   module.exports = nextConfig
   ```
 - [ ] Replace `YOUR_PROJECT_REF` with your actual Supabase project reference (from project URL)
+  - Example: `njgfxadvmlooogdjxeml.supabase.co`
 - [ ] Restart dev server
 
 **Acceptance Criteria:**
-- ✅ `next.config.js` created
-- ✅ Supabase domain added to allowed image domains
+- ✅ `next.config.js` created with `remotePatterns` configuration
+- ✅ Supabase domain whitelisted for images
 - ✅ No errors when restarting server
+
+**Note:** We use `remotePatterns` instead of the deprecated `domains` array for better security and more granular control over allowed image sources.
 
 ---
 
@@ -769,12 +777,9 @@ const { error: insertError } = await supabase
             )}
           </div>
 
-          {/* Info */}
+          {/* Info - name only (no location on homepage) */}
           <div className="p-4">
-            <h3 className="font-semibold text-lg mb-1">{displayName}</h3>
-            {plant.location && (
-              <p className="text-sm text-gray-600">{plant.location}</p>
-            )}
+            <h3 className="font-semibold text-lg">{displayName}</h3>
           </div>
         </div>
       </Link>
@@ -809,7 +814,7 @@ const { error: insertError } = await supabase
 
 **Acceptance Criteria:**
 - ✅ Plants display in grid
-- ✅ Grid is responsive (1 col mobile, 2-4 cols desktop)
+- ✅ Grid is responsive 
 - ✅ All 53 plants visible
 
 ---
@@ -1088,15 +1093,16 @@ const { error: insertError } = await supabase
                 />
               </div>
 
-              {/* Metadata */}
-              <div className="p-3 text-sm text-gray-600">
-                {photo.planta_last_updated && (
+              {/* Metadata - show date for Planta photos, display order for historical */}
+              {photo.planta_last_updated ? (
+                <div className="p-3 text-sm text-gray-600">
                   <p>{formatDate(photo.planta_last_updated)}</p>
-                )}
-                <p className="text-xs">
-                  Source: {photo.source === 'planta' ? '📱 Planta' : '📁 Historical'}
-                </p>
-              </div>
+                </div>
+              ) : photo.display_order ? (
+                <div className="p-3 text-sm text-gray-600">
+                  <p>Photo {photo.display_order}</p>
+                </div>
+              ) : null}
             </div>
           ))}
         </div>
@@ -1107,8 +1113,9 @@ const { error: insertError } = await supabase
 
 **Acceptance Criteria:**
 - ✅ Timeline displays all photos in grid
-- ✅ Photos show date (if available)
-- ✅ Source labeled (Planta vs Historical)
+- ✅ Planta photos show formatted date (e.g., "November 15, 2024")
+- ✅ Historical photos show display order (e.g., "Photo 1", "Photo 2")
+- ✅ No source badges (simplified for MVP)
 - ✅ Grid is responsive
 
 ---
@@ -1233,7 +1240,7 @@ const { error: insertError } = await supabase
 - [ ] Plant detail pages work for all plants
 - [ ] Page shows plant name, location, variety, scientific name
 - [ ] Photo timeline displays all photos in correct order
-- [ ] Photos labeled with source and date (if available)
+- [ ] Planta photos show date, historical photos show "Photo X"
 - [ ] Loading and 404 states work
 - [ ] Page is responsive on all devices
 - [ ] Basic accessibility implemented
