@@ -42,3 +42,25 @@ export function getMostRecentPhoto(photos: Photo[]): string | null {
 
   return sorted[0]?.photo_url || null
 }
+
+/**
+ * Generate a blur placeholder for images
+ * This creates a tiny base64-encoded SVG for smooth image loading
+ */
+export function getBlurDataURL(): string {
+  const svg = `
+    <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+      <rect width="40" height="40" fill="#f0f0f0"/>
+      <rect width="40" height="40" fill="url(#gradient)" opacity="0.3"/>
+      <defs>
+        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#e0e0e0;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#d0d0d0;stop-opacity:1" />
+        </linearGradient>
+      </defs>
+    </svg>
+  `.trim()
+
+  const base64 = Buffer.from(svg).toString('base64')
+  return `data:image/svg+xml;base64,${base64}`
+}

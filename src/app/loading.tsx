@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-14">
       {/* Hero Skeleton */}
       <div className="text-center mb-12 sm:mb-16">
         <div className="h-12 sm:h-14 lg:h-16 bg-surface border border-border rounded-lg w-96 max-w-full mx-auto mb-4 animate-pulse" />
@@ -12,7 +12,7 @@ export default function Loading() {
         {Array.from({ length: 15 }).map((_, i) => (
           <div
             key={i}
-            className="overflow-hidden rounded-2xl bg-surface border border-border shadow-sm"
+            className="overflow-hidden rounded-2xl bg-surface border border-border shadow-card"
           >
             <div className="aspect-square bg-background animate-pulse" />
             <div className="p-4 space-y-2">

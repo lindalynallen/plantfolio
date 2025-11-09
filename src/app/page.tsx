@@ -35,26 +35,27 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
       {/* Hero Section */}
       <div className="text-center mb-12 sm:mb-16">
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-tight">
           My Plant Collection
         </h1>
-        <p className="text-lg sm:text-xl text-muted max-w-2xl mx-auto">
+        <p className="text-lg sm:text-xl text-muted max-w-2xl mx-auto leading-relaxed">
           Welcome to my personal plant gallery featuring over 50 houseplants.
         </p>
       </div>
 
       {/* Plant Grid - 5 columns on large screens */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-        {plants?.map((plant) => {
+        {plants?.map((plant, index) => {
           const thumbnailUrl = getMostRecentPhoto(plant.photos as Photo[])
           return (
             <PlantCard
               key={plant.id}
               plant={plant as Plant}
               thumbnailUrl={thumbnailUrl}
+              priority={index < 5}
             />
           )
         })}

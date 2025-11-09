@@ -14,16 +14,39 @@
 
   @media (prefers-color-scheme: dark) {
     :root {
-      --color-background: 10 10 10; /* Near-black background */
-      --color-surface: 24 24 27; /* Dark card background */
+      --color-background: 15 15 17; /* Warmer near-black background */
+      --color-surface: 28 28 32; /* Warmer dark card background */
       --color-foreground: 250 250 250; /* Light text */
-      --color-border: 39 39 42; /* Dark border */
+      --color-border: 45 45 48; /* Softer dark border */
       --color-muted: 161 161 170; /* Muted gray for secondary text */
     }
   }
 
   body {
     @apply bg-background text-foreground antialiased;
+  }
+
+  /* Smooth color transitions for dark mode (only colors, not transforms) */
+  body,
+  header,
+  main,
+  article,
+  div[class*="bg-"],
+  div[class*="border-"],
+  p,
+  h1, h2, h3, h4, h5, h6 {
+    transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+  }
+
+  /* Accessibility - Focus states for keyboard navigation */
+  a:focus-visible,
+  button:focus-visible {
+    @apply outline-none ring-2 ring-foreground ring-offset-2 ring-offset-background rounded-lg;
+  }
+
+  /* Better text rendering */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
   }
 }
 
