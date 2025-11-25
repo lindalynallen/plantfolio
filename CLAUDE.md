@@ -8,7 +8,7 @@ Plantfolio is a personal plant gallery website showcasing 54+ houseplants with h
 
 **Tech Stack:** Next.js, TypeScript, Tailwind CSS, Supabase (PostgreSQL + Storage)
 
-**Current Status:** Backend complete (EPICs 1-2), Frontend in progress (EPIC 3+)
+**Current Status:** EPICs 1-5 complete (Backend, Frontend, Planta API Sync)
 
 ## Commands
 
@@ -20,6 +20,39 @@ npm run backfill         # Upload historical photos (idempotent)
 npm run backfill:test    # Test backfill on 3 sample folders
 ```
 
+## API Endpoints
+
+### Sync Planta Photos
+
+Manually sync new photos from Planta API:
+
+```bash
+# Local
+curl -X POST http://localhost:3000/api/sync
+
+# Production (after deployment)
+curl -X POST https://your-site.vercel.app/api/sync
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "plants_synced": 54,
+  "photos_added": 3,
+  "errors": []
+}
+```
+
+**How it works:**
+- Fetches all plants from Planta API with pagination
+- Inserts new plants (if any)
+- Never overwrites existing plant data
+- Detects new photos via `planta_image_url` comparison
+- Downloads and uploads new photos to Supabase Storage
+- Automatically refreshes access token if <1 hour remaining
+- Returns summary with counts and any errors
+
 ## Architecture
 
 **Database:** 3 tables in Supabase - `plants`, `photos`, `sync_tokens`
@@ -29,6 +62,17 @@ npm run backfill:test    # Test backfill on 3 sample folders
 **Display name logic:** `custom_name || localized_name` (custom takes priority)
 
 **Photo sorting:** `ORDER BY planta_last_updated DESC NULLS LAST, display_order ASC`
+
+## Commit Message Convention
+
+Follow conventional commits with these prefixes:
+
+- `feat: complete EPIC N - Description` - For EPIC milestones
+- `feat: description` - New features
+- `refactor: description` - Code restructuring
+- `polish: description` - UI/UX improvements
+- `docs: description` - Documentation changes
+- `fix: description` - Bug fixes
 
 ## Reference Documentation
 

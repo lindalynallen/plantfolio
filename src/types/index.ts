@@ -50,7 +50,7 @@ export interface SyncResponse {
 
 /**
  * Planta API Types
- * These match the structure from the Planta API response
+ * These match the structure from the Planta API Swagger documentation
  */
 
 export interface PlantaPlant {
@@ -62,10 +62,29 @@ export interface PlantaPlant {
     scientific: string
   }
   site: {
+    id: string
     name: string
   }
   image: {
     url: string
     lastUpdated: string
-  } | null
+  } | null  // Important: image can be null if plant has no photo
+}
+
+export interface PlantaPlantsResponse {
+  status: number
+  data: PlantaPlant[]
+  pagination: {
+    nextPage: string | null  // Cursor for pagination (null = no more pages)
+  }
+}
+
+export interface PlantaAuthResponse {
+  status: number
+  data: {
+    accessToken: string
+    refreshToken: string
+    tokenType: 'Bearer'
+    expiresAt: string  // ISO 8601 timestamp
+  }
 }
