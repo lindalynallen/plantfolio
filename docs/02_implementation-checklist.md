@@ -1827,15 +1827,18 @@ async function refreshAccessToken(refreshToken: string): Promise<string> {
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
   - `SUPABASE_SERVICE_ROLE_KEY`
   - `PLANTA_API_BASE_URL`
+  - `SYNC_API_KEY` ⚠️ **CRITICAL** - Required for `/api/sync` endpoint security
 - [ ] For `NEXT_PUBLIC_*` variables:
   - Check: Production, Preview, Development
-- [ ] For `SUPABASE_SERVICE_ROLE_KEY`:
-  - Check: Production only (sensitive)
+- [ ] For `SUPABASE_SERVICE_ROLE_KEY` and `SYNC_API_KEY`:
+  - Check: Production only (both are sensitive!)
+  - ⚠️ Never expose these in client-side code
 - [ ] Save variables
 
 **Acceptance Criteria:**
-- ✅ All 4 environment variables added
+- ✅ All 5 environment variables added
 - ✅ Correct environments selected for each
+- ✅ `SYNC_API_KEY` set to same value as local `.env.local`
 
 ---
 
@@ -1875,16 +1878,20 @@ async function refreshAccessToken(refreshToken: string): Promise<string> {
 ---
 
 ### Task 6.10: Test Sync in Production
-- [ ] Use Postman or curl to test production sync:
+- [ ] Use Postman or curl to test production sync (requires authentication):
   ```bash
-  curl -X POST https://your-site.vercel.app/api/sync
+  # Replace YOUR_SYNC_API_KEY with actual key from .env.local
+  curl -X POST https://your-site.vercel.app/api/sync \
+    -H "Authorization: Bearer YOUR_SYNC_API_KEY"
   ```
 - [ ] Verify sync completes successfully
 - [ ] Check response includes proper stats
 - [ ] Verify new photos appear in production site
+- [ ] Test without API key to verify 401 Unauthorized is returned
 
 **Acceptance Criteria:**
-- ✅ Sync endpoint works in production
+- ✅ Sync endpoint works in production with correct API key
+- ✅ Sync endpoint returns 401 without API key (security working)
 - ✅ Photos sync correctly
 - ✅ No production-specific errors
 

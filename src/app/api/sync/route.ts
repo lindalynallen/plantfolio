@@ -2,7 +2,9 @@
  * Planta API Sync Endpoint
  * Manually sync new photos from Planta API
  *
- * Usage: POST http://localhost:3000/api/sync
+ * Usage:
+ *   curl -X POST http://localhost:3000/api/sync \
+ *     -H "Authorization: Bearer YOUR_SYNC_API_KEY"
  *
  * Returns:
  * {
@@ -14,21 +16,34 @@
  */
 
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
 import { fetchAllPlants, downloadPhoto } from '@/lib/planta-api'
+import { supabaseAdmin } from '@/lib/supabase'
 import type { PlantaPlant, SyncResponse } from '@/types'
-
-// Create server-side Supabase client with service role key
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-const supabase = createClient(supabaseUrl, supabaseServiceKey)
+import { logInfo, logWarn, logError } from '@/lib/logger'
 
 /**
  * POST /api/sync
  * Sync new photos from Planta API
+ *
+ * Requires authentication via Bearer token
  */
-export async function POST() {
-  console.log('🔄 Starting Planta API sync...\n')
+export async function POST(request: Request) {
+  // Check authentication first (before any expensive operations)
+  const authHeader = request.headers.get('authorization')
+  const expectedAuth = `Bearer ${process.env.SYNC_API_KEY}`
+
+  if (!authHeader || authHeader !== expectedAuth) {
+    logWarn('🚫 Unauthorized sync attempt from:', request.headers.get('x-forwarded-for') || 'unknown')
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Unauthorized. Please provide valid API key in Authorization header.'
+      },
+      { status: 401 }
+    )
+  }
+
+  logInfo('🔄 Starting Planta API sync...\n')
 
   let plantsSynced = 0
   let photosAdded = 0
@@ -37,7 +52,7 @@ export async function POST() {
   try {
     // 1. Fetch all plants from Planta API (token refresh happens automatically)
     const plantaPlants = await fetchAllPlants()
-    console.log(`\n📊 Fetched ${plantaPlants.length} plants from Planta API\n`)
+    logInfo(`\n📊 Fetched ${plantaPlants.length} plants from Planta API\n`)
 
     // 2. Process each plant
     for (const plantaPlant of plantaPlants) {
@@ -49,7 +64,7 @@ export async function POST() {
         plantsSynced++
       } catch (err: any) {
         const displayName = plantaPlant.names.custom || plantaPlant.names.localizedName
-        console.error(`❌ Error syncing plant ${displayName}:`, err.message)
+        logError(`❌ Error syncing plant ${displayName}:`, err.message)
         errors.push({
           plant_id: plantaPlant.id,
           message: err.message
@@ -58,17 +73,17 @@ export async function POST() {
     }
 
     // 3. Print summary
-    console.log('\n' + '='.repeat(60))
-    console.log('✅ Sync complete!')
-    console.log('='.repeat(60))
-    console.log(`📊 Plants synced: ${plantsSynced}`)
-    console.log(`📸 Photos added: ${photosAdded}`)
-    console.log(`❌ Errors: ${errors.length}`)
+    logInfo('\n' + '='.repeat(60))
+    logInfo('✅ Sync complete!')
+    logInfo('='.repeat(60))
+    logInfo(`📊 Plants synced: ${plantsSynced}`)
+    logInfo(`📸 Photos added: ${photosAdded}`)
+    logInfo(`❌ Errors: ${errors.length}`)
 
     if (errors.length > 0) {
-      console.log('\n⚠️  Errors:')
+      logError('\n⚠️  Errors:')
       errors.forEach(e => {
-        console.log(`   - Plant ${e.plant_id}: ${e.message}`)
+        logError(`   - Plant ${e.plant_id}: ${e.message}`)
       })
     }
 
@@ -83,7 +98,7 @@ export async function POST() {
     return NextResponse.json(response)
 
   } catch (error: any) {
-    console.error('\n💥 Sync failed with fatal error:', error.message)
+    logError('\n💥 Sync failed with fatal error:', error.message)
     return NextResponse.json(
       {
         success: false,
@@ -106,7 +121,7 @@ async function syncPlant(plantaPlant: PlantaPlant): Promise<boolean> {
   const displayName = plantaPlant.names.custom || plantaPlant.names.localizedName
 
   // 1. Check if plant exists in database
-  const { data: existingPlant } = await supabase
+  const { data: existingPlant } = await supabaseAdmin
     .from('plants')
     .select('id')
     .eq('planta_id', plantaPlant.id)
@@ -116,7 +131,7 @@ async function syncPlant(plantaPlant: PlantaPlant): Promise<boolean> {
 
   if (!existingPlant) {
     // New plant - insert it
-    const { data: newPlant, error: insertError } = await supabase
+    const { data: newPlant, error: insertError } = await supabaseAdmin
       .from('plants')
       .insert({
         planta_id: plantaPlant.id,
@@ -135,33 +150,33 @@ async function syncPlant(plantaPlant: PlantaPlant): Promise<boolean> {
     }
 
     plantId = newPlant.id
-    console.log(`  ✨ New plant: ${displayName}`)
+    logInfo(`  ✨ New plant: ${displayName}`)
   } else {
     // Plant exists - use existing ID (don't overwrite data)
     plantId = existingPlant.id
-    console.log(`  ⏭️  Plant exists: ${displayName}`)
+    logInfo(`  ⏭️  Plant exists: ${displayName}`)
   }
 
   // 2. Check if plant has an image
   if (!plantaPlant.image?.url) {
-    console.log(`  ⚠️  No image for plant`)
+    logInfo(`  ⚠️  No image for plant`)
     return false
   }
 
   // 3. Check if we already have this photo (by URL)
-  const { data: existingPhoto } = await supabase
+  const { data: existingPhoto } = await supabaseAdmin
     .from('photos')
     .select('id')
     .eq('planta_image_url', plantaPlant.image.url)
     .maybeSingle()
 
   if (existingPhoto) {
-    console.log(`  ⏭️  Photo already exists`)
+    logInfo(`  ⏭️  Photo already exists`)
     return false
   }
 
   // 4. Download and upload new photo
-  console.log(`  📸 Downloading new photo...`)
+  logInfo(`  📸 Downloading new photo...`)
   const photoBuffer = await downloadPhoto(plantaPlant.image.url)
 
   // Sanitize timestamp for filename (replace colons with dashes)
@@ -171,7 +186,7 @@ async function syncPlant(plantaPlant: PlantaPlant): Promise<boolean> {
   const storagePath = `planta/${filename}`
 
   // Upload to Supabase Storage
-  const { error: uploadError } = await supabase
+  const { error: uploadError } = await supabaseAdmin
     .storage
     .from('plant-photos')
     .upload(storagePath, photoBuffer, {
@@ -184,13 +199,13 @@ async function syncPlant(plantaPlant: PlantaPlant): Promise<boolean> {
   }
 
   // Get public URL
-  const { data: urlData } = supabase
+  const { data: urlData } = supabaseAdmin
     .storage
     .from('plant-photos')
     .getPublicUrl(storagePath)
 
   // Insert photo record into database
-  const { error: insertPhotoError } = await supabase
+  const { error: insertPhotoError } = await supabaseAdmin
     .from('photos')
     .insert({
       plant_id: plantId,
@@ -207,6 +222,6 @@ async function syncPlant(plantaPlant: PlantaPlant): Promise<boolean> {
     throw new Error(`Failed to insert photo record: ${insertPhotoError.message}`)
   }
 
-  console.log(`  ✅ Photo added!`)
+  logInfo(`  ✅ Photo added!`)
   return true
 }
