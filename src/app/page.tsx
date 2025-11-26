@@ -2,11 +2,10 @@ import { supabase } from '@/lib/supabase'
 import { Plant, Photo } from '@/types'
 import { PlantCard } from '@/components/PlantCard'
 import { getMostRecentPhoto } from '@/lib/utils'
-import { REVALIDATE_INTERVAL } from '@/lib/constants'
 import { logError } from '@/lib/logger'
 
 // Revalidate every hour (ISR - Incremental Static Regeneration)
-export const revalidate = REVALIDATE_INTERVAL
+export const revalidate = 3600 // Next.js requires literal values for route config
 
 export default async function HomePage() {
   // Fetch all active plants with their photos

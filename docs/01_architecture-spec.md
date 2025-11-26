@@ -322,6 +322,39 @@ User clicks plant → Fetch plant + photos → Display timeline
 
 **Note:** Planning examples use `console.log` for clarity, but production code should use conditional logging to avoid unnecessary noise in production logs (Vercel dashboard).
 
+### Q12: Next.js Route Segment Config Constants
+**Issue Discovered (2025-11-26):**
+Next.js 16.0.1 requires route segment config exports (like `revalidate`, `dynamic`, etc.) to be **literal values**, not imported constants.
+
+**What Fails:**
+```typescript
+// ❌ Build fails with "Invalid segment configuration export detected"
+import { REVALIDATE_INTERVAL } from '@/lib/constants'
+export const revalidate = REVALIDATE_INTERVAL
+```
+
+**What Works:**
+```typescript
+// ✅ Build succeeds
+export const revalidate = 3600  // Must be literal value
+```
+
+**Root Cause:**
+- Next.js docs state config values must be "statically analyzable"
+- Next.js 16 interprets this strictly: only literal values, no imports
+- Likely a limitation in Next.js's static analysis during build
+
+**Solution:**
+- Use literal values for all route segment config exports with inline comments
+- Example: `export const revalidate = 3600 // Next.js requires literal values for route config`
+- Removed unused `REVALIDATE_INTERVAL` constant from `constants.ts` (dead code)
+
+**References:**
+- Next.js Docs: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
+- Discovered during pre-deployment review of commit `ce80357`
+
+**Note:** This is not a code smell in this context - route segment config is declarative build-time configuration, not runtime code.
+
 ---
 
 ## 6. IMPLEMENTATION ROADMAP
@@ -665,6 +698,8 @@ vercel deploy
 |---------|------|---------|--------|
 | 1.0 | 2025-11-02 | Initial architecture plan | Claude Code |
 | 8.0 | 2025-11-03 | Final reviewed version with all decisions incorporated | Claude Code |
+| 8.1 | 2025-11-26 | Add Q11: Logging Strategy (commit ce80357) | Claude Code |
+| 8.2 | 2025-11-26 | Add Q12: Next.js Route Segment Config Constants limitation | Claude Code |
 
 ---
 

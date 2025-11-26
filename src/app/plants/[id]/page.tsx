@@ -4,10 +4,9 @@ import { supabase } from '@/lib/supabase'
 import { getPlantDisplayName, sortPhotos } from '@/lib/utils'
 import { PlantHeader } from '@/components/PlantHeader'
 import { PhotoTimeline } from '@/components/PhotoTimeline'
-import { REVALIDATE_INTERVAL } from '@/lib/constants'
 
 // Revalidate every hour
-export const revalidate = REVALIDATE_INTERVAL
+export const revalidate = 3600 // Next.js requires literal values for route config
 
 interface PlantDetailPageProps {
   params: Promise<{
