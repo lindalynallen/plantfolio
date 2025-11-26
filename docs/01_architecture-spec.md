@@ -313,6 +313,15 @@ User clicks plant → Fetch plant + photos → Display timeline
 - Gallery filters by `WHERE is_active = true`
 - V2 can add smart detection with `last_seen_at` tracking
 
+### Q11: Logging Strategy
+**MVP Strategy:**
+- Use conditional logging based on `NODE_ENV`
+- Info logs (progress, sync status) only show in development
+- Warnings and errors always show (including production)
+- Simple utility functions instead of heavy logging library
+
+**Note:** Planning examples use `console.log` for clarity, but production code should use conditional logging to avoid unnecessary noise in production logs (Vercel dashboard).
+
 ---
 
 ## 6. IMPLEMENTATION ROADMAP

@@ -2,9 +2,11 @@ import { supabase } from '@/lib/supabase'
 import { Plant, Photo } from '@/types'
 import { PlantCard } from '@/components/PlantCard'
 import { getMostRecentPhoto } from '@/lib/utils'
+import { REVALIDATE_INTERVAL } from '@/lib/constants'
+import { logError } from '@/lib/logger'
 
 // Revalidate every hour (ISR - Incremental Static Regeneration)
-export const revalidate = 3600
+export const revalidate = REVALIDATE_INTERVAL
 
 export default async function HomePage() {
   // Fetch all active plants with their photos
@@ -23,7 +25,7 @@ export default async function HomePage() {
     .order('localized_name', { ascending: true })
 
   if (error) {
-    console.error('Error fetching plants:', error)
+    logError('Error fetching plants:', error)
     return (
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center text-muted">

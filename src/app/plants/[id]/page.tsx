@@ -4,9 +4,10 @@ import { supabase } from '@/lib/supabase'
 import { getPlantDisplayName, sortPhotos } from '@/lib/utils'
 import { PlantHeader } from '@/components/PlantHeader'
 import { PhotoTimeline } from '@/components/PhotoTimeline'
+import { REVALIDATE_INTERVAL } from '@/lib/constants'
 
 // Revalidate every hour
-export const revalidate = 3600
+export const revalidate = REVALIDATE_INTERVAL
 
 interface PlantDetailPageProps {
   params: Promise<{

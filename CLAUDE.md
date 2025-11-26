@@ -24,15 +24,19 @@ npm run backfill:test    # Test backfill on 3 sample folders
 
 ### Sync Planta Photos
 
-Manually sync new photos from Planta API:
+Manually sync new photos from Planta API (requires authentication):
 
 ```bash
 # Local
-curl -X POST http://localhost:3000/api/sync
+curl -X POST http://localhost:3000/api/sync \
+  -H "Authorization: Bearer $SYNC_API_KEY"
 
 # Production (after deployment)
-curl -X POST https://your-site.vercel.app/api/sync
+curl -X POST https://your-site.vercel.app/api/sync \
+  -H "Authorization: Bearer $SYNC_API_KEY"
 ```
+
+**Authentication:** The endpoint requires a Bearer token set in the `SYNC_API_KEY` environment variable. This protects against unauthorized access and abuse.
 
 **Response:**
 ```json
@@ -79,3 +83,4 @@ Follow conventional commits with these prefixes:
 - **Project brief:** `docs/00_project-brief.md`
 - **Full architecture:** `docs/01_architecture-spec.md`
 - **Task checklist:** `docs/02_implementation-checklist.md`
+- **Deployment guide:** `docs/DEPLOYMENT.md` ⚠️ Required reading before deploying to Vercel

@@ -6,13 +6,10 @@
  * Uses service role key for elevated Supabase permissions.
  */
 
-import { createClient } from '@supabase/supabase-js'
 import type { PlantaPlant, PlantaPlantsResponse, PlantaAuthResponse } from '@/types'
-
-// Create server-side Supabase client with service role key
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-const supabase = createClient(supabaseUrl, supabaseServiceKey)
+import { ONE_HOUR_MS, API_MAX_RETRIES, PHOTO_MAX_RETRIES, calculateRetryDelay } from '@/lib/constants'
+import { supabaseAdmin } from '@/lib/supabase'
+import { logInfo, logWarn, logError } from '@/lib/logger'
 
 const PLANTA_API_BASE_URL = process.env.PLANTA_API_BASE_URL || 'https://public.planta-api.com'
 
@@ -22,7 +19,7 @@ const PLANTA_API_BASE_URL = process.env.PLANTA_API_BASE_URL || 'https://public.p
  */
 export async function getAccessToken(): Promise<string> {
   // Fetch current tokens from database
-  const { data: tokenData, error } = await supabase
+  const { data: tokenData, error } = await supabaseAdmin
     .from('sync_tokens')
     .select('*')
     .eq('id', 1)
@@ -34,10 +31,10 @@ export async function getAccessToken(): Promise<string> {
 
   // Check if token expires in less than 1 hour
   const expiresAt = new Date(tokenData.expires_at)
-  const oneHourFromNow = new Date(Date.now() + 3600000) // 1 hour in ms
+  const oneHourFromNow = new Date(Date.now() + ONE_HOUR_MS)
 
   if (expiresAt < oneHourFromNow) {
-    console.log('🔄 Access token expires soon, refreshing...')
+    logInfo('🔄 Access token expires soon, refreshing...')
     return await refreshAccessToken(tokenData.refresh_token)
   }
 
@@ -73,7 +70,7 @@ async function refreshAccessToken(currentRefreshToken: string): Promise<string> 
     const data: PlantaAuthResponse = await response.json()
 
     // Update database with new tokens (both rotate!)
-    const { error: updateError } = await supabase
+    const { error: updateError } = await supabaseAdmin
       .from('sync_tokens')
       .update({
         access_token: data.data.accessToken,
@@ -84,11 +81,15 @@ async function refreshAccessToken(currentRefreshToken: string): Promise<string> 
       .eq('id', 1)
 
     if (updateError) {
-      console.error('⚠️  Warning: Failed to update tokens in database:', updateError.message)
-      // Don't throw - sync can still work with the new token
+      logError('⚠️  Warning: Failed to update tokens in database:')
+      logError('   Error:', updateError.message)
+      logError('   Impact: Next sync will need to refresh tokens again')
+      logError('   Action: Check database connection and permissions')
+      // Don't throw - sync can still work with the new token in memory
+    } else {
+      logInfo('✅ Token refreshed and saved to database')
     }
 
-    console.log('✅ Token refreshed successfully')
     return data.data.accessToken
 
   } catch (error: any) {
@@ -115,7 +116,7 @@ export async function fetchAllPlants(): Promise<PlantaPlant[]> {
     const data: PlantaPlantsResponse = await response.json()
 
     plants.push(...data.data)
-    console.log(`📥 Fetched ${data.data.length} plants (total: ${plants.length})`)
+    logInfo(`📥 Fetched ${data.data.length} plants (total: ${plants.length})`)
 
     // Check if there are more pages
     if (!data.pagination.nextPage) {
@@ -135,7 +136,7 @@ export async function fetchAllPlants(): Promise<PlantaPlant[]> {
 async function fetchWithRetry(
   url: string,
   accessToken: string,
-  maxRetries: number = 3
+  maxRetries: number = API_MAX_RETRIES
 ): Promise<Response> {
   let lastError: Error | null = null
 
@@ -150,8 +151,8 @@ async function fetchWithRetry(
 
       // Handle rate limiting
       if (response.status === 429) {
-        const delay = Math.pow(2, attempt) * 1000 // 1s, 2s, 4s
-        console.warn(`⚠️  Rate limited (429), waiting ${delay}ms before retry...`)
+        const delay = calculateRetryDelay(attempt)
+        logWarn(`⚠️  Rate limited (429), waiting ${delay}ms before retry...`)
         await new Promise(resolve => setTimeout(resolve, delay))
         continue
       }
@@ -166,8 +167,8 @@ async function fetchWithRetry(
     } catch (error: any) {
       lastError = error
       if (attempt < maxRetries - 1) {
-        const delay = Math.pow(2, attempt) * 1000
-        console.warn(`⚠️  Request failed, retrying in ${delay}ms...`)
+        const delay = calculateRetryDelay(attempt)
+        logWarn(`⚠️  Request failed, retrying in ${delay}ms...`)
         await new Promise(resolve => setTimeout(resolve, delay))
       }
     }
@@ -183,7 +184,7 @@ async function fetchWithRetry(
 export async function downloadPhoto(url: string): Promise<Buffer> {
   let lastError: Error | null = null
 
-  for (let attempt = 0; attempt < 3; attempt++) {
+  for (let attempt = 0; attempt < PHOTO_MAX_RETRIES; attempt++) {
     try {
       const response = await fetch(url)
 
@@ -196,13 +197,13 @@ export async function downloadPhoto(url: string): Promise<Buffer> {
 
     } catch (error: any) {
       lastError = error
-      if (attempt < 2) {
-        const delay = Math.pow(2, attempt) * 1000 // 1s, 2s
-        console.warn(`⚠️  Photo download failed, retrying in ${delay}ms...`)
+      if (attempt < PHOTO_MAX_RETRIES - 1) {
+        const delay = calculateRetryDelay(attempt)
+        logWarn(`⚠️  Photo download failed, retrying in ${delay}ms...`)
         await new Promise(resolve => setTimeout(resolve, delay))
       }
     }
   }
 
-  throw new Error(`Photo download failed after 3 attempts: ${lastError?.message}`)
+  throw new Error(`Photo download failed after ${PHOTO_MAX_RETRIES} attempts: ${lastError?.message}`)
 }
