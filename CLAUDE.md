@@ -18,6 +18,10 @@ npm run build            # Build for production
 npm run insert-plants    # Insert plants from Planta API JSON (idempotent)
 npm run backfill         # Upload historical photos (idempotent)
 npm run backfill:test    # Test backfill on 3 sample folders
+npm test                 # Run tests in watch mode
+npm run test:run         # Run tests once (CI mode)
+npm run test:coverage    # Generate coverage report
+npm run test:ui          # Open Vitest UI
 ```
 
 ## API Endpoints
@@ -77,4 +81,5 @@ Follow conventional commits with these prefixes:
 - `polish: description` - UI/UX improvements
 - `docs: description` - Documentation changes
 - `fix: description` - Bug fixes
+- `test: description` - Test additions or changes
 
