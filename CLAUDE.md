@@ -78,9 +78,3 @@ Follow conventional commits with these prefixes:
 - `docs: description` - Documentation changes
 - `fix: description` - Bug fixes
 
-## Reference Documentation
-
-- **Project brief:** `docs/00_project-brief.md`
-- **Full architecture:** `docs/01_architecture-spec.md`
-- **Task checklist:** `docs/02_implementation-checklist.md`
-- **Deployment guide:** `docs/DEPLOYMENT.md` ⚠️ Required reading before deploying to Vercel
