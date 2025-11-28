@@ -24,7 +24,7 @@ export function PlantCard({ plant, thumbnailUrl, priority = false }: PlantCardPr
               src={thumbnailUrl}
               alt={displayName}
               fill
-              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
+              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
               placeholder="blur"
               blurDataURL={getBlurDataURL()}
               priority={priority}
@@ -38,12 +38,12 @@ export function PlantCard({ plant, thumbnailUrl, priority = false }: PlantCardPr
         </div>
 
         {/* Info */}
-        <div className="p-4">
-          <h3 className="font-semibold text-base text-foreground mb-1">
+        <div className="p-2.5 sm:p-4">
+          <h3 className="font-semibold text-sm sm:text-base text-foreground mb-0.5 sm:mb-1 truncate">
             {displayName}
           </h3>
           {plant.scientific_name && (
-            <p className="text-sm italic text-muted/70">
+            <p className="text-xs sm:text-sm italic text-muted/70 truncate">
               {plant.scientific_name}
             </p>
           )}
