@@ -50,7 +50,7 @@ export function PlantDetailClient({ plant, photos }: PlantDetailClientProps) {
             </h1>
             <div className="flex flex-wrap items-center gap-x-2 mt-1 text-sm sm:text-base text-muted">
               {plant.scientific_name && (
-                <span className="italic">{plant.scientific_name}</span>
+                <span className="italic text-muted/70">{plant.scientific_name}</span>
               )}
               {plant.scientific_name && (plant.location || photos.length > 0) && (
                 <span className="text-muted/50">·</span>
@@ -78,8 +78,8 @@ export function PlantDetailClient({ plant, photos }: PlantDetailClientProps) {
                   className="col-span-2 row-span-2 group cursor-pointer"
                 >
                   <div className="relative aspect-square h-full overflow-hidden rounded-xl sm:rounded-2xl bg-surface
-                                 ring-1 ring-border/50 transition-all duration-300
-                                 group-hover:ring-border group-hover:shadow-xl group-hover:shadow-black/15">
+                                 ring-1 ring-border shadow-card transition-all duration-300
+                                 group-hover:shadow-card-hover">
                     <Image
                       src={featuredPhoto.photo_url}
                       alt={`${displayName} - ${getPhotoLabel(featuredPhoto)}`}
@@ -88,7 +88,7 @@ export function PlantDetailClient({ plant, photos }: PlantDetailClientProps) {
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 66vw, 40vw"
                       placeholder="blur"
                       blurDataURL={getBlurDataURL()}
-                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                     />
                     {/* Date badge */}
                     <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4">
@@ -111,8 +111,8 @@ export function PlantDetailClient({ plant, photos }: PlantDetailClientProps) {
                     className="group cursor-pointer"
                   >
                     <div className="relative aspect-square overflow-hidden rounded-xl sm:rounded-2xl bg-surface
-                                   ring-1 ring-border/50 transition-all duration-300
-                                   group-hover:ring-border group-hover:shadow-lg group-hover:shadow-black/10">
+                                   ring-1 ring-border shadow-card transition-all duration-300
+                                   group-hover:shadow-card-hover">
                       <Image
                         src={photo.photo_url}
                         alt={`${displayName} - ${label}`}
@@ -120,7 +120,7 @@ export function PlantDetailClient({ plant, photos }: PlantDetailClientProps) {
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                         placeholder="blur"
                         blurDataURL={getBlurDataURL()}
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                       />
                       {/* Date badge */}
                       <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3">

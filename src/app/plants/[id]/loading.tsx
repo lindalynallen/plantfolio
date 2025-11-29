@@ -25,13 +25,13 @@ export default function Loading() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3">
           {/* Featured photo skeleton - 2x2 */}
           <div className="col-span-2 row-span-2">
-            <div className="aspect-square h-full bg-surface border border-border rounded-xl sm:rounded-2xl animate-pulse" />
+            <div className="aspect-square h-full bg-surface border border-border shadow-card rounded-xl sm:rounded-2xl animate-pulse" />
           </div>
 
           {/* Other photos skeleton */}
           {Array.from({ length: 10 }).map((_, i) => (
             <div key={i}>
-              <div className="aspect-square bg-surface border border-border rounded-xl sm:rounded-2xl animate-pulse" />
+              <div className="aspect-square bg-surface border border-border shadow-card rounded-xl sm:rounded-2xl animate-pulse" />
             </div>
           ))}
         </div>

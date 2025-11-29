@@ -15,9 +15,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className={GeistSans.className}>
-      <body className="min-h-screen">
+      <body className="min-h-screen flex flex-col">
         <Header />
-        <main>{children}</main>
+        <main className="flex-1">{children}</main>
+        <footer className="py-6 text-center text-sm text-muted border-t border-border">
+          <p>Plantfolio &copy; {new Date().getFullYear()}</p>
+        </footer>
       </body>
     </html>
   )

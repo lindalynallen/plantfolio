@@ -107,10 +107,23 @@ function extractUniqueLocations(plants: PlantWithPhotos[]): string[] {
  */
 function ErrorMessage() {
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="text-center text-muted">
-        <p>Oops! We couldn't load your plants right now.</p>
-        <p className="text-sm mt-2">Please try refreshing the page.</p>
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+      <div className="max-w-2xl mx-auto text-center">
+        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground mb-4">
+          Couldn't load plants
+        </h1>
+        <p className="text-lg text-muted mb-8">
+          We ran into a problem loading your collection. Please try again.
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background rounded-lg hover:opacity-90 transition-opacity font-medium"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>Refresh page</span>
+        </button>
       </div>
     </div>
   )
