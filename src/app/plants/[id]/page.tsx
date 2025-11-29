@@ -1,9 +1,8 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { getPlantDisplayName, sortPhotos } from '@/lib/utils'
-import { PlantHeader } from '@/components/PlantHeader'
-import { PhotoTimeline } from '@/components/PhotoTimeline'
+import { sortPhotos } from '@/lib/utils'
+import { PlantDetailClient } from '@/components/PlantDetailClient'
 
 // Revalidate every hour
 export const revalidate = 3600 // Next.js requires literal values for route config
@@ -70,12 +69,6 @@ export default async function PlantDetailPage({ params }: PlantDetailPageProps) 
 
   // Sort photos using utility function
   const sortedPhotos = sortPhotos(plant.photos || [])
-  const displayName = getPlantDisplayName(plant)
 
-  return (
-    <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
-      <PlantHeader plant={plant} />
-      <PhotoTimeline photos={sortedPhotos} plantName={displayName} />
-    </main>
-  )
+  return <PlantDetailClient plant={plant} photos={sortedPhotos} />
 }

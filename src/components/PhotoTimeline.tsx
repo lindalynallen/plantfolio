@@ -22,7 +22,7 @@ export function PhotoTimeline({ photos, plantName }: PhotoTimelineProps) {
 
   if (photos.length === 0) {
     return (
-      <div className="text-center py-12">
+      <div className="text-center py-16 sm:py-24">
         <p className="text-lg text-muted">No photos yet</p>
       </div>
     )
@@ -30,42 +30,52 @@ export function PhotoTimeline({ photos, plantName }: PhotoTimelineProps) {
 
   return (
     <>
-      <div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-4 sm:mb-6">
-          Photo Timeline ({photos.length} {photos.length === 1 ? 'photo' : 'photos'})
-        </h2>
+      <section>
+        {/* Minimal section header */}
+        <div className="flex items-baseline justify-between mb-6 sm:mb-8">
+          <h2 className="text-sm font-medium uppercase tracking-wider text-muted">
+            Timeline
+          </h2>
+          <span className="text-sm text-muted/70">
+            {photos.length} {photos.length === 1 ? 'photo' : 'photos'}
+          </span>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+        {/* Clean photo grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
           {photos.map((photo, index) => {
             const label = getPhotoLabel(photo)
             return (
               <div
                 key={photo.id}
                 onClick={() => handlePhotoClick(index)}
-                className="overflow-hidden rounded-2xl bg-surface border border-border shadow-card transition-all duration-300 hover:shadow-card-hover cursor-pointer group"
+                className="group cursor-pointer"
               >
-                {/* Image */}
-                <div className="relative aspect-square bg-background">
+                {/* Image container */}
+                <div className="relative aspect-square overflow-hidden rounded-xl sm:rounded-2xl bg-surface
+                               ring-1 ring-border/50 transition-all duration-300
+                               group-hover:ring-border group-hover:shadow-lg group-hover:shadow-black/10">
                   <Image
                     src={photo.photo_url}
                     alt={`${plantName} - ${label}`}
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                     placeholder="blur"
                     blurDataURL={getBlurDataURL()}
-                    className="object-cover transition-all duration-400 group-hover:scale-[1.04]"
+                    className="object-cover transition-transform duration-500 ease-out
+                               group-hover:scale-105"
                   />
                 </div>
 
-                {/* Label */}
-                <div className="p-3 sm:p-4">
-                  <p className="text-sm text-muted">{label}</p>
-                </div>
+                {/* Label below image */}
+                <p className="mt-2 sm:mt-3 text-xs sm:text-sm text-muted truncate">
+                  {label}
+                </p>
               </div>
             )
           })}
         </div>
-      </div>
+      </section>
 
       {/* Lightbox */}
       <PhotoLightbox

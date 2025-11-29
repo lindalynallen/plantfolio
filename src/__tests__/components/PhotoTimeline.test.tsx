@@ -47,13 +47,15 @@ describe('PhotoTimeline', () => {
   it('displays correct photo count in heading', () => {
     render(<PhotoTimeline photos={mockPhotos} plantName="Monstera" />)
 
-    expect(screen.getByText(/Photo Timeline \(2 photos\)/)).toBeInTheDocument()
+    expect(screen.getByText('Timeline')).toBeInTheDocument()
+    expect(screen.getByText('2 photos')).toBeInTheDocument()
   })
 
   it('shows singular "photo" when count is 1', () => {
     render(<PhotoTimeline photos={[mockPhotos[0]]} plantName="Monstera" />)
 
-    expect(screen.getByText(/Photo Timeline \(1 photo\)/)).toBeInTheDocument()
+    expect(screen.getByText('Timeline')).toBeInTheDocument()
+    expect(screen.getByText('1 photo')).toBeInTheDocument()
   })
 
   it('shows formatted date for Planta photos', () => {
