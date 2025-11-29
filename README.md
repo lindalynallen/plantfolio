@@ -28,7 +28,7 @@ My 50+ houseplants live in the **Planta** mobile app, which has two limitations:
 Plantfolio creates a **self-maintaining photo archive** through:
 
 1. **Historical Backfill** — 400+ archived photos uploaded to cloud storage with preserved ordering
-2. **Sync Endpoint** — API polling detects and archives new photos before they're overwritten
+2. **Sync Endpoint** — Manual sync endpoint detects and archives new photos before they're overwritten
 
 The result: a living gallery that grows automatically as I add photos in Planta.
 
@@ -76,13 +76,15 @@ if (existingPhoto) continue // Skip - already archived
 - **Growth Timelines** — Chronological photo galleries showing each plant's journey
 - **Sync Endpoint** — Bearer-authenticated API for on-demand photo updates
 - **Smart Sorting** — Planta photos (newest first), then historical (by display order)
-- **Responsive Gallery** — 1-5 column grid adapts to any screen size
+- **Responsive Gallery** — 2-6 column grid adapts to any screen size
 - **Interactive Lightbox** — Full-screen viewing with keyboard navigation
 - **Error Boundaries** — Graceful degradation with retry functionality
 
 ---
 
 ## Architecture
+
+<div style="overflow-x: auto;">
 
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
@@ -99,6 +101,8 @@ if (existingPhoto) continue // Skip - already archived
                                                  │   Frontend    │
                                                  └───────────────┘
 ```
+
+</div>
 
 **Database:** 3 tables
 - `plants` — 54 records with names, species, locations
