@@ -59,7 +59,7 @@ export function FilterBar({
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search..."
             aria-label="Search plants"
-            className="w-full h-8 pl-8 pr-8 text-sm bg-surface border border-border rounded-md text-foreground placeholder:text-muted/60 focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors"
+            className="w-full h-8 pl-8 pr-8 text-base sm:text-sm bg-surface border border-border rounded-md text-foreground placeholder:text-muted/60 focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors"
           />
 
           {searchQuery && (
@@ -170,7 +170,7 @@ export function FilterBar({
             value={selectedLocation}
             onChange={(e) => onLocationChange(e.target.value)}
             aria-label="Filter by location"
-            className="w-full h-8 appearance-none pl-2.5 pr-6 text-xs bg-surface border border-border rounded-md text-foreground focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors cursor-pointer"
+            className="w-full h-8 appearance-none pl-2.5 pr-6 text-base bg-surface border border-border rounded-md text-foreground focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors cursor-pointer"
           >
             <option value="">All locations</option>
             {locations.map((location) => (
@@ -195,7 +195,7 @@ export function FilterBar({
             value={sortBy}
             onChange={(e) => onSortChange(e.target.value as SortOption)}
             aria-label="Sort by"
-            className="w-full h-8 appearance-none pl-2.5 pr-6 text-xs bg-surface border border-border rounded-md text-foreground focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors cursor-pointer"
+            className="w-full h-8 appearance-none pl-2.5 pr-6 text-base bg-surface border border-border rounded-md text-foreground focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors cursor-pointer"
           >
             {SORT_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
