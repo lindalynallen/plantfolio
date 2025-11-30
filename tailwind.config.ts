@@ -6,43 +6,75 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  darkMode: 'media', // Use system preferences
+  darkMode: 'media',
   theme: {
     extend: {
       colors: {
         background: 'rgb(var(--color-background) / <alpha-value>)',
-        surface: 'rgb(var(--color-surface) / <alpha-value>)',
+        surface: {
+          DEFAULT: 'rgb(var(--color-surface) / <alpha-value>)',
+          '2': 'rgb(var(--color-surface-2) / <alpha-value>)',
+        },
         foreground: 'rgb(var(--color-foreground) / <alpha-value>)',
-        border: 'rgb(var(--color-border) / <alpha-value>)',
+        border: {
+          DEFAULT: 'rgb(var(--color-border) / <alpha-value>)',
+          hover: 'rgb(var(--color-border-hover) / <alpha-value>)',
+        },
         muted: 'rgb(var(--color-muted) / <alpha-value>)',
+        accent: {
+          DEFAULT: 'rgb(var(--color-accent) / <alpha-value>)',
+          muted: 'rgb(var(--color-accent-muted) / <alpha-value>)',
+        },
       },
       fontFamily: {
         sans: [
+          'var(--font-geist-sans)',
           'system-ui',
           '-apple-system',
           'BlinkMacSystemFont',
           'Segoe UI',
           'Roboto',
-          'Helvetica Neue',
-          'Arial',
           'sans-serif',
         ],
+        mono: [
+          'var(--font-geist-mono)',
+          'ui-monospace',
+          'SFMono-Regular',
+          'monospace',
+        ],
       },
-      backdropBlur: {
-        xs: '2px',
+      fontSize: {
+        '2xs': ['0.625rem', { lineHeight: '0.875rem' }],  // 10px
+      },
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+      },
+      borderRadius: {
+        'sm': '0.25rem',   // 4px - tighter
+        'DEFAULT': '0.375rem', // 6px
+        'md': '0.5rem',    // 8px
+        'lg': '0.625rem',  // 10px
       },
       boxShadow: {
-        'card': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-        'card-hover': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        'xs': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+        'card': '0 1px 2px 0 rgb(0 0 0 / 0.05), 0 0 0 1px rgb(0 0 0 / 0.05)',
+        'card-hover': '0 4px 12px 0 rgb(0 0 0 / 0.1), 0 0 0 1px rgb(0 0 0 / 0.05)',
+        'elevated': '0 8px 24px -4px rgb(0 0 0 / 0.12), 0 0 0 1px rgb(0 0 0 / 0.05)',
       },
       keyframes: {
         fadeIn: {
-          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '0%': { opacity: '0', transform: 'translateY(4px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        slideIn: {
+          '0%': { opacity: '0', transform: 'translateX(-4px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
         },
       },
       animation: {
-        fadeIn: 'fadeIn 0.5s ease-out forwards',
+        'fadeIn': 'fadeIn 0.2s ease-out forwards',
+        'slideIn': 'slideIn 0.15s ease-out forwards',
       },
     },
   },

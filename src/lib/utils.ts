@@ -8,6 +8,39 @@ export function getPlantDisplayName(plant: Plant): string {
 }
 
 /**
+ * Format date as relative time (e.g., "2d ago", "3mo ago")
+ * For dates older than 1 year, shows abbreviated date
+ */
+export function formatRelativeDate(dateString: string | null): string {
+  if (!dateString) return ''
+
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+
+  if (diffDays === 0) return 'today'
+  if (diffDays === 1) return '1d ago'
+  if (diffDays < 7) return `${diffDays}d ago`
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo ago`
+
+  // For older dates, show abbreviated date
+  return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' })
+}
+
+/**
+ * Format date as short string (e.g., "Nov 26")
+ */
+export function formatShortDate(dateString: string | null): string {
+  if (!dateString) return ''
+  return new Date(dateString).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric'
+  })
+}
+
+/**
  * Format date to readable string
  */
 export function formatDate(dateString: string | null): string {

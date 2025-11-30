@@ -3,56 +3,121 @@
 @tailwind utilities;
 
 @layer base {
+  /*
+   * Design System: Data-Dense Dark
+   * Inspired by Linear, Notion, Raycast
+   * Dark-first with light mode support
+   */
+
   :root {
-    /* Light mode colors (RGB values for opacity support) */
-    --color-background: 248 249 250; /* Light gray background */
-    --color-surface: 255 255 255; /* White cards */
-    --color-foreground: 17 24 39; /* Near-black text */
-    --color-border: 229 231 235; /* Light gray border */
-    --color-muted: 107 114 128; /* Muted gray for secondary text */
+    /* Light mode - clean, minimal, high contrast */
+    --color-background: 250 250 250;    /* Neutral off-white */
+    --color-surface: 255 255 255;       /* Pure white cards */
+    --color-surface-2: 245 245 245;     /* Nested surface */
+    --color-foreground: 10 10 10;       /* Near-black, high contrast */
+    --color-border: 230 230 230;        /* Subtle border */
+    --color-border-hover: 200 200 200;  /* Hover border */
+    --color-muted: 115 115 115;         /* Secondary text */
+    --color-accent: 34 139 34;          /* Forest green accent */
+    --color-accent-muted: 34 139 34;    /* Accent at lower opacity */
   }
 
   @media (prefers-color-scheme: dark) {
     :root {
-      --color-background: 15 15 17; /* Warmer near-black background */
-      --color-surface: 28 28 32; /* Warmer dark card background */
-      --color-foreground: 250 250 250; /* Light text */
-      --color-border: 45 45 48; /* Softer dark border */
-      --color-muted: 161 161 170; /* Muted gray for secondary text */
+      /* Dark mode - rich, refined, Raycast-inspired */
+      --color-background: 9 9 11;         /* Deep, rich black */
+      --color-surface: 17 17 19;          /* Elevated surface */
+      --color-surface-2: 24 24 27;        /* Nested/hover surface */
+      --color-foreground: 250 250 250;    /* Crisp white text */
+      --color-border: 39 39 42;           /* Subtle dark border */
+      --color-border-hover: 63 63 70;     /* Hover border */
+      --color-muted: 161 161 170;         /* Secondary text */
+      --color-accent: 74 222 128;         /* Vibrant green accent */
+      --color-accent-muted: 34 197 94;    /* Softer accent */
     }
+  }
+
+  html {
+    /* Tighter default letter-spacing for data-dense feel */
+    letter-spacing: -0.01em;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
-  /* Smooth color transitions for dark mode (only colors, not transforms) */
-  body,
-  header,
-  main,
-  article,
-  div[class*="bg-"],
-  div[class*="border-"],
-  p,
-  h1, h2, h3, h4, h5, h6 {
-    transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+  /* Smooth color transitions for theme switching */
+  body, header, main, article, section, aside,
+  div[class*="bg-"], div[class*="border-"],
+  p, span, h1, h2, h3, h4, h5, h6 {
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
   }
 
   /* Accessibility - Focus states for keyboard navigation */
   a:focus-visible,
-  button:focus-visible {
-    @apply outline-none ring-2 ring-foreground ring-offset-2 ring-offset-background rounded-lg;
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-1 ring-offset-background;
   }
 
-  /* Better text rendering */
+  /* Typography - tighter, more refined */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+    @apply font-semibold;
+    letter-spacing: -0.025em;
+  }
+
+  /* Refined scrollbar for dark mode */
+  @media (prefers-color-scheme: dark) {
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgb(63 63 70);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgb(82 82 91);
+    }
+  }
+}
+
+@layer components {
+  /* Data-dense card style */
+  .card {
+    @apply bg-surface border border-border rounded-lg transition-colors;
+  }
+  .card:hover {
+    @apply border-border-hover bg-surface-2;
+  }
+
+  /* Badge styles */
+  .badge {
+    @apply inline-flex items-center px-1.5 py-0.5 text-xs font-medium rounded bg-surface-2 text-muted;
+  }
+  .badge-accent {
+    @apply bg-accent/10 text-accent;
   }
 }
 
 @layer utilities {
   /* Frosted glass effect for header */
   .frosted-glass {
-    @apply bg-surface/80 backdrop-blur-md border-b border-border;
+    @apply bg-background/80 backdrop-blur-xl border-b border-border;
+  }
+
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Tabular numbers for data */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
   }
 }

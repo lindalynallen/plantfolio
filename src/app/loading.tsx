@@ -1,26 +1,35 @@
 export default function Loading() {
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-      {/* Stats headline skeleton */}
-      <div className="h-8 sm:h-9 bg-surface border border-border rounded-lg w-80 sm:w-96 mx-auto mb-6 sm:mb-8 animate-pulse" />
-
-      {/* Filter bar skeleton */}
-      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8">
-        <div className="h-12 bg-surface border border-border rounded-xl flex-1 animate-pulse" />
-        <div className="h-12 bg-surface border border-border rounded-xl sm:w-48 animate-pulse" />
+    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
+      {/* Stats bar skeleton */}
+      <div className="flex items-center gap-3 mb-4 sm:mb-5">
+        <div className="h-5 w-24 bg-surface-2 rounded animate-pulse" />
+        <div className="h-5 w-24 bg-surface-2 rounded animate-pulse" />
+        <div className="hidden sm:block h-5 w-24 bg-surface-2 rounded animate-pulse" />
       </div>
 
-      {/* Grid skeleton - matches PlantGallery grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
-        {Array.from({ length: 12 }).map((_, index) => (
+      {/* Filter bar skeleton */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 sm:mb-5">
+        <div className="flex flex-col sm:flex-row gap-2 flex-1">
+          <div className="h-8 bg-surface border border-border rounded-md flex-1 max-w-md animate-pulse" />
+          <div className="h-8 w-32 bg-surface border border-border rounded-md animate-pulse" />
+          <div className="h-8 w-36 bg-surface border border-border rounded-md animate-pulse" />
+        </div>
+        <div className="h-8 w-20 bg-surface-2 border border-border rounded-md animate-pulse" />
+      </div>
+
+      {/* Grid skeleton */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
+        {Array.from({ length: 18 }).map((_, index) => (
           <div
             key={index}
-            className="overflow-hidden rounded-2xl bg-surface border border-border shadow-card"
+            className="overflow-hidden rounded-lg bg-surface border border-border"
           >
-            <div className="aspect-square bg-background animate-pulse" />
-            <div className="p-2.5 sm:p-4 space-y-2">
-              <div className="h-4 sm:h-5 bg-background rounded animate-pulse w-3/4" />
-              <div className="h-3 sm:h-4 bg-background rounded animate-pulse w-1/2" />
+            <div className="aspect-[4/3] bg-surface-2 animate-pulse" />
+            <div className="p-2 sm:p-2.5 space-y-1.5">
+              <div className="h-4 bg-surface-2 rounded animate-pulse w-3/4" />
+              <div className="h-3 bg-surface-2 rounded animate-pulse w-1/2" />
+              <div className="h-3 bg-surface-2 rounded animate-pulse w-2/3" />
             </div>
           </div>
         ))}

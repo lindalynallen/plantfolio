@@ -35,16 +35,27 @@ export default async function HomePage() {
   // Get sorted list of unique locations for the filter dropdown
   const uniqueLocations = extractUniqueLocations(plants || [])
 
-  // Pre-compute thumbnail URLs on server (avoids recalculating on every client render)
-  const plantsWithThumbnails = (plants || []).map((plant) => ({
-    ...plant,
-    thumbnailUrl: getMostRecentPhoto(plant.photos as Photo[]),
-  }))
+  // Pre-compute metadata on server (avoids recalculating on every client render)
+  const plantsWithMeta = (plants || []).map((plant) => {
+    const photos = plant.photos as Photo[]
+    // Get most recent photo date (for sorting and display)
+    const lastUpdated = photos
+      .filter(p => p.planta_last_updated)
+      .sort((a, b) => new Date(b.planta_last_updated!).getTime() - new Date(a.planta_last_updated!).getTime())[0]
+      ?.planta_last_updated || null
+
+    return {
+      ...plant,
+      thumbnailUrl: getMostRecentPhoto(photos),
+      photoCount: photos.length,
+      lastUpdated,
+    }
+  })
 
   return (
     <Suspense fallback={<GalleryFallback />}>
       <PlantGallery
-        plants={plantsWithThumbnails}
+        plants={plantsWithMeta}
         stats={stats}
         locations={uniqueLocations}
       />
@@ -131,27 +142,32 @@ function ErrorMessage() {
 
 /**
  * Loading skeleton shown while PlantGallery is suspended
- * Matches the layout of the actual gallery for smooth transition
  */
 function GalleryFallback() {
   return (
-    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-10">
-      {/* Stats headline skeleton */}
-      <div className="h-8 sm:h-9 bg-surface rounded-lg w-80 sm:w-96 mx-auto mb-6 sm:mb-8 animate-pulse" />
+    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
+      {/* Stats bar skeleton */}
+      <div className="flex items-center gap-3 mb-4 sm:mb-5">
+        <div className="h-5 w-24 bg-surface-2 rounded animate-pulse" />
+        <div className="h-5 w-24 bg-surface-2 rounded animate-pulse" />
+      </div>
 
       {/* Filter bar skeleton */}
-      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8">
-        <div className="h-12 bg-surface rounded-xl flex-1 animate-pulse" />
-        <div className="h-12 bg-surface rounded-xl sm:w-48 animate-pulse" />
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-4 sm:mb-5">
+        <div className="h-8 bg-surface border border-border rounded-md flex-1 max-w-md animate-pulse" />
+        <div className="h-8 w-32 bg-surface border border-border rounded-md animate-pulse" />
       </div>
 
       {/* Grid skeleton */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
-        {Array.from({ length: 12 }).map((_, index) => (
-          <div
-            key={index}
-            className="aspect-square bg-surface rounded-2xl animate-pulse"
-          />
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
+        {Array.from({ length: 18 }).map((_, index) => (
+          <div key={index} className="overflow-hidden rounded-lg bg-surface border border-border">
+            <div className="aspect-[4/3] bg-surface-2 animate-pulse" />
+            <div className="p-2 space-y-1.5">
+              <div className="h-4 bg-surface-2 rounded animate-pulse w-3/4" />
+              <div className="h-3 bg-surface-2 rounded animate-pulse w-1/2" />
+            </div>
+          </div>
         ))}
       </div>
     </div>
