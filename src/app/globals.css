@@ -7,6 +7,7 @@
    * Design System: Data-Dense Dark
    * Inspired by Linear, Notion, Raycast
    * Dark-first with light mode support
+   * Mobile-first typography
    */
 
   :root {
@@ -17,8 +18,8 @@
     --color-foreground: 10 10 10;       /* Near-black, high contrast */
     --color-border: 230 230 230;        /* Subtle border */
     --color-border-hover: 200 200 200;  /* Hover border */
-    --color-muted: 115 115 115;         /* Secondary text */
-    --color-accent: 34 139 34;          /* Forest green accent */
+    --color-muted: 100 100 100;         /* Secondary text - slightly darker for better contrast */
+    --color-accent: 22 163 74;          /* Green accent */
     --color-accent-muted: 34 139 34;    /* Accent at lower opacity */
   }
 
@@ -40,10 +41,14 @@
   html {
     /* Tighter default letter-spacing for data-dense feel */
     letter-spacing: -0.01em;
+    /* Prevent layout shift when scrollbar appears/disappears */
+    overflow-y: scroll;
+    /* Prevent text scaling on iOS Safari */
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased text-base;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
@@ -59,7 +64,7 @@
   button:focus-visible,
   input:focus-visible,
   select:focus-visible {
-    @apply outline-none ring-2 ring-accent ring-offset-1 ring-offset-background;
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-background;
   }
 
   /* Typography - tighter, more refined */
@@ -71,15 +76,15 @@
   /* Refined scrollbar for dark mode */
   @media (prefers-color-scheme: dark) {
     ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
     }
     ::-webkit-scrollbar-track {
       background: transparent;
     }
     ::-webkit-scrollbar-thumb {
       background: rgb(63 63 70);
-      border-radius: 4px;
+      border-radius: 5px;
     }
     ::-webkit-scrollbar-thumb:hover {
       background: rgb(82 82 91);
@@ -90,18 +95,25 @@
 @layer components {
   /* Data-dense card style */
   .card {
-    @apply bg-surface border border-border rounded-lg transition-colors;
+    @apply bg-surface border border-border rounded-lg transition-all duration-150;
   }
   .card:hover {
     @apply border-border-hover bg-surface-2;
   }
 
-  /* Badge styles */
+  /* Badge styles - larger for better readability */
   .badge {
-    @apply inline-flex items-center px-1.5 py-0.5 text-xs font-medium rounded bg-surface-2 text-muted;
+    @apply inline-flex items-center px-2.5 py-1 text-sm font-medium rounded-md bg-surface-2 text-muted;
   }
   .badge-accent {
     @apply bg-accent/10 text-accent;
+  }
+
+  /* Touch-friendly input base */
+  .input-base {
+    @apply h-11 sm:h-10 text-base sm:text-sm bg-surface border border-border rounded-md text-foreground
+           placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent
+           transition-colors;
   }
 }
 
@@ -119,5 +131,11 @@
   /* Tabular numbers for data */
   .tabular-nums {
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Minimum touch target size - 44px per Apple HIG */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
   }
 }

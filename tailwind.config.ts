@@ -44,17 +44,26 @@ const config: Config = {
         ],
       },
       fontSize: {
-        '2xs': ['0.625rem', { lineHeight: '0.875rem' }],  // 10px
+        // Mobile-first type scale - larger base sizes
+        '2xs': ['0.6875rem', { lineHeight: '1rem' }],      // 11px
+        'xs': ['0.8125rem', { lineHeight: '1.25rem' }],    // 13px
+        'sm': ['0.875rem', { lineHeight: '1.375rem' }],    // 14px
+        'base': ['1rem', { lineHeight: '1.5rem' }],        // 16px
+        'lg': ['1.125rem', { lineHeight: '1.625rem' }],    // 18px
+        'xl': ['1.25rem', { lineHeight: '1.75rem' }],      // 20px
+        '2xl': ['1.5rem', { lineHeight: '2rem' }],         // 24px
+        '3xl': ['1.875rem', { lineHeight: '2.25rem' }],    // 30px
       },
       spacing: {
         '18': '4.5rem',
         '88': '22rem',
       },
       borderRadius: {
-        'sm': '0.25rem',   // 4px - tighter
-        'DEFAULT': '0.375rem', // 6px
-        'md': '0.5rem',    // 8px
-        'lg': '0.625rem',  // 10px
+        'sm': '0.375rem',  // 6px
+        'DEFAULT': '0.5rem', // 8px
+        'md': '0.625rem',  // 10px
+        'lg': '0.75rem',   // 12px
+        'xl': '1rem',      // 16px
       },
       boxShadow: {
         'xs': '0 1px 2px 0 rgb(0 0 0 / 0.05)',

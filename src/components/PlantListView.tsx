@@ -17,9 +17,9 @@ interface PlantListViewProps {
 
 export function PlantListView({ plants }: PlantListViewProps) {
   return (
-    <div className="border border-border rounded-lg overflow-hidden divide-y divide-border">
-      {/* Header row */}
-      <div className="hidden sm:grid sm:grid-cols-[2fr_1.5fr_1fr_0.75fr_0.75fr] gap-4 px-3 py-2 bg-surface-2 text-xs font-medium text-muted uppercase tracking-wider">
+    <div className="border border-border rounded-lg overflow-hidden">
+      {/* Header row - desktop only */}
+      <div className="hidden sm:grid sm:grid-cols-[2fr_1.5fr_1fr_0.75fr_0.75fr] gap-4 px-4 py-3 bg-surface-2 text-sm font-medium text-muted border-b border-border">
         <div>Name</div>
         <div>Species</div>
         <div>Location</div>
@@ -28,9 +28,11 @@ export function PlantListView({ plants }: PlantListViewProps) {
       </div>
 
       {/* Plant rows */}
-      {plants.map((plant) => (
-        <PlantRow key={plant.id} plant={plant} />
-      ))}
+      <div className="divide-y divide-border">
+        {plants.map((plant) => (
+          <PlantRow key={plant.id} plant={plant} />
+        ))}
+      </div>
     </div>
   )
 }
@@ -42,31 +44,33 @@ function PlantRow({ plant }: { plant: PlantWithMeta }) {
   return (
     <Link
       href={`/plants/${plant.id}`}
-      className="group flex items-center gap-3 sm:grid sm:grid-cols-[2fr_1.5fr_1fr_0.75fr_0.75fr] sm:gap-4 px-3 py-2.5 bg-surface hover:bg-surface-2 transition-colors"
+      className="group flex items-center gap-4 sm:grid sm:grid-cols-[2fr_1.5fr_1fr_0.75fr_0.75fr] sm:gap-4 px-4 py-3 bg-surface hover:bg-surface-2 transition-colors"
     >
       {/* Name + Thumbnail */}
-      <div className="flex items-center gap-3 min-w-0">
-        {/* Thumbnail */}
-        <div className="relative w-10 h-10 rounded overflow-hidden bg-background flex-shrink-0">
+      <div className="flex items-center gap-3 min-w-0 flex-1 sm:flex-none">
+        {/* Thumbnail - larger */}
+        <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-background flex-shrink-0">
           {plant.thumbnailUrl ? (
             <Image
               src={plant.thumbnailUrl}
               alt={displayName}
               fill
-              sizes="40px"
+              sizes="48px"
               placeholder="blur"
               blurDataURL={getBlurDataURL()}
               className="object-cover"
             />
           ) : (
-            <div className="flex items-center justify-center h-full text-muted text-[10px]">
-              —
+            <div className="flex items-center justify-center h-full text-muted">
+              <svg className="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
             </div>
           )}
         </div>
 
         {/* Name */}
-        <span className="font-medium text-sm text-foreground truncate">
+        <span className="font-medium text-base text-foreground truncate">
           {displayName}
         </span>
       </div>
@@ -81,30 +85,27 @@ function PlantRow({ plant }: { plant: PlantWithMeta }) {
         {plant.location || '—'}
       </div>
 
-      {/* Photo count */}
+      {/* Photo count - hidden on mobile */}
       <div className="hidden sm:block text-sm text-muted text-right tabular-nums">
         {plant.photoCount}
       </div>
 
-      {/* Last updated */}
+      {/* Last updated - hidden on mobile */}
       <div className="hidden sm:block text-sm text-muted text-right tabular-nums">
         {relativeDate || '—'}
       </div>
 
       {/* Mobile: Compact metadata */}
-      <div className="flex sm:hidden items-center gap-2 text-xs text-muted ml-auto">
-        <span className="tabular-nums">{plant.photoCount} photos</span>
+      <div className="flex sm:hidden items-center gap-3 text-sm text-muted ml-auto flex-shrink-0">
+        <span className="tabular-nums">{plant.photoCount}</span>
         {relativeDate && (
           <>
             <span className="text-muted/40">·</span>
             <span className="tabular-nums">{relativeDate}</span>
           </>
         )}
-      </div>
-
-      {/* Chevron indicator */}
-      <div className="sm:hidden text-muted/50 group-hover:text-muted">
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {/* Chevron indicator */}
+        <svg className="w-5 h-5 text-muted/50 group-hover:text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </div>

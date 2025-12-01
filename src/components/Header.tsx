@@ -4,14 +4,14 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-12 items-center justify-between">
+        <div className="flex h-14 sm:h-16 items-center justify-between">
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-1.5 text-sm font-semibold text-foreground transition-colors hover:text-muted"
+            className="flex items-center gap-2 text-base sm:text-lg font-semibold text-foreground transition-colors hover:text-muted" 
           >
             <svg
-              className="h-4 w-4 text-accent"
+              className="h-5 w-5 sm:h-6 sm:w-6 text-accent"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -31,11 +31,11 @@ export function Header() {
             href="https://github.com/lindalynallen/plantfolio"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-muted hover:text-foreground transition-colors"
+            className="flex items-center justify-center w-10 h-10 rounded-lg text-muted hover:text-foreground hover:bg-surface-2 transition-colors"
             aria-label="View source on GitHub"
           >
             <svg
-              className="h-4 w-4"
+              className="h-5 w-5"
               viewBox="0 0 24 24"
               fill="currentColor"
               aria-hidden="true"

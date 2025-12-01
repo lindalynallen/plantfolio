@@ -108,25 +108,34 @@ export function PlantGallery({ plants, stats, locations }: PlantGalleryProps) {
   }
 
   return (
-    <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
-      {/* Compact Stats Bar */}
-      <div className="flex items-center justify-between mb-4 sm:mb-5">
-        <div className="flex items-center gap-3 text-sm text-muted tabular-nums">
-          <span><strong className="text-foreground">{stats.totalPlants}</strong> plants</span>
-          <span className="text-muted/30">·</span>
-          <span><strong className="text-foreground">{stats.totalPhotos}</strong> photos</span>
-          <span className="hidden sm:inline text-muted/30">·</span>
-          <span className="hidden sm:inline"><strong className="text-foreground">{stats.totalLocations}</strong> locations</span>
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8">
+      {/* Stats Bar */}
+      <div className="flex items-center justify-between mb-5 sm:mb-6 min-h-[36px]">
+        <div className="flex items-baseline gap-2 sm:gap-3 text-muted">
+          <span>
+            <span className="text-xl font-semibold text-foreground tabular-nums">{stats.totalPlants}</span>
+            {' '}plants
+          </span>
+          <span className="text-muted/40">|</span>
+          <span>
+            <span className="text-xl font-semibold text-foreground tabular-nums">{stats.totalPhotos}</span>
+            {' '}photos
+          </span>
+          <span className="hidden sm:inline text-muted/40">|</span>
+          <span className="hidden sm:inline">
+            <span className="text-xl font-semibold text-foreground tabular-nums">{stats.totalLocations}</span>
+            {' '}locations
+          </span>
         </div>
 
         {/* Active filter indicator */}
         {hasActiveFilters && (
           <button
             onClick={clearFilters}
-            className="text-xs text-muted hover:text-foreground transition-colors flex items-center gap-1"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted hover:text-foreground bg-surface-2 hover:bg-surface border border-border rounded-lg transition-colors"
           >
-            <span>{processedPlants.length} results</span>
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span className="tabular-nums">{processedPlants.length} results</span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -134,7 +143,7 @@ export function PlantGallery({ plants, stats, locations }: PlantGalleryProps) {
       </div>
 
       {/* Filter Bar */}
-      <div className="mb-4 sm:mb-5">
+      <div className="mb-5 sm:mb-6">
         <FilterBar
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
@@ -151,7 +160,7 @@ export function PlantGallery({ plants, stats, locations }: PlantGalleryProps) {
       {/* Plant View */}
       {processedPlants.length > 0 ? (
         viewMode === 'grid' ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
             {processedPlants.map((plant, index) => (
               <PlantCard
                 key={plant.id}
@@ -175,16 +184,16 @@ export function PlantGallery({ plants, stats, locations }: PlantGalleryProps) {
 
 function EmptyState({ onClearFilters }: { onClearFilters: () => void }) {
   return (
-    <div className="text-center py-16">
-      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-surface-2 mb-4">
-        <svg className="w-6 h-6 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div className="text-center py-20">
+      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-surface-2 mb-5">
+        <svg className="w-8 h-8 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
       </div>
-      <p className="text-muted text-sm mb-3">No plants found</p>
+      <p className="text-lg text-muted mb-4">No plants found</p>
       <button
         onClick={onClearFilters}
-        className="text-xs text-foreground hover:text-muted transition-colors"
+        className="px-4 py-2 text-sm font-medium text-foreground bg-surface hover:bg-surface-2 border border-border rounded-lg transition-colors"
       >
         Clear filters
       </button>

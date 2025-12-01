@@ -33,13 +33,13 @@ export function FilterBar({
   onViewModeChange,
 }: FilterBarProps) {
   return (
-    <div className="flex flex-col gap-2 w-full">
-      {/* Row 1: Search + Filters (desktop) */}
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 flex-1 sm:flex-initial">
-          <div className="relative flex-1 sm:w-[448px]">
+    <div className="flex flex-col gap-3 w-full">
+      {/* Row 1: Search only on mobile, Search + all filters on desktop */}
+      <div className="flex items-center gap-2">
+        {/* Search Input - grows to fill available space */}
+        <div className="relative flex-1 sm:max-w-md">
           <svg
-            className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted"
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -59,106 +59,101 @@ export function FilterBar({
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search..."
             aria-label="Search plants"
-            className="w-full h-8 pl-8 pr-8 text-base sm:text-sm bg-surface border border-border rounded-md text-foreground placeholder:text-muted/60 focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors"
+            className="w-full h-11 sm:h-10 pl-10 pr-10 text-base bg-surface border border-border rounded-lg text-foreground placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
           />
 
           {searchQuery && (
             <button
               onClick={() => onSearchChange('')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-muted hover:text-foreground transition-colors"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-md text-muted hover:text-foreground hover:bg-surface-2 transition-colors"
               aria-label="Clear search"
             >
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           )}
         </div>
 
-          {/* Desktop: Location + Sort inline with search */}
-          <div className="hidden sm:contents">
-          {/* Location Filter */}
-          <div className="relative">
-            <select
-              value={selectedLocation}
-              onChange={(e) => onLocationChange(e.target.value)}
-              aria-label="Filter by location"
-              className="h-8 appearance-none pl-3 pr-7 text-sm bg-surface border border-border rounded-md text-foreground focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors cursor-pointer"
-            >
-              <option value="">All locations</option>
-              {locations.map((location) => (
-                <option key={location} value={location}>
-                  {location}
-                </option>
-              ))}
-            </select>
-            <svg
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted pointer-events-none"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </div>
-
-          {/* Sort Dropdown */}
-          <div className="relative">
-            <select
-              value={sortBy}
-              onChange={(e) => onSortChange(e.target.value as SortOption)}
-              aria-label="Sort by"
-              className="h-8 appearance-none pl-3 pr-7 text-sm bg-surface border border-border rounded-md text-foreground focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors cursor-pointer"
-            >
-              {SORT_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <svg
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted pointer-events-none"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </div>
-
-          </div>
+        {/* Desktop: Location Filter */}
+        <div className="hidden sm:block relative">
+          <select
+            value={selectedLocation}
+            onChange={(e) => onLocationChange(e.target.value)}
+            aria-label="Filter by location"
+            className="h-10 appearance-none pl-3 pr-8 text-base bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors cursor-pointer"
+          >
+            <option value="">All locations</option>
+            {locations.map((location) => (
+              <option key={location} value={location}>
+                {location}
+              </option>
+            ))}
+          </select>
+          <svg
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
         </div>
 
-        {/* Desktop: View Toggle (right aligned) */}
-        <div className="hidden sm:flex items-center gap-0.5 p-0.5 bg-surface-2 rounded-md border border-border">
-          <button
-            onClick={() => onViewModeChange('grid')}
-            className={`p-1.5 rounded transition-colors ${
-              viewMode === 'grid'
-                ? 'bg-surface text-foreground shadow-xs'
-                : 'text-muted hover:text-foreground'
-            }`}
-            aria-label="Grid view"
-            aria-pressed={viewMode === 'grid'}
+        {/* Desktop: Sort Dropdown */}
+        <div className="hidden sm:block relative">
+          <select
+            value={sortBy}
+            onChange={(e) => onSortChange(e.target.value as SortOption)}
+            aria-label="Sort by"
+            className="h-10 appearance-none pl-3 pr-8 text-base bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors cursor-pointer"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-            </svg>
-          </button>
-          <button
-            onClick={() => onViewModeChange('list')}
-            className={`p-1.5 rounded transition-colors ${
-              viewMode === 'list'
-                ? 'bg-surface text-foreground shadow-xs'
-                : 'text-muted hover:text-foreground'
-            }`}
-            aria-label="List view"
-            aria-pressed={viewMode === 'list'}
+            {SORT_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          <svg
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+
+        {/* Desktop: View Toggle */}
+        <div className="hidden sm:flex items-center gap-1 p-1 bg-surface-2 rounded-lg border border-border ml-auto">
+            <button
+              onClick={() => onViewModeChange('grid')}
+              className={`p-2 rounded-md transition-colors ${
+                viewMode === 'grid'
+                  ? 'bg-surface text-foreground shadow-xs'
+                  : 'text-muted hover:text-foreground'
+              }`}
+              aria-label="Grid view"
+              aria-pressed={viewMode === 'grid'}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+            </button>
+            <button
+              onClick={() => onViewModeChange('list')}
+              className={`p-2 rounded-md transition-colors ${
+                viewMode === 'list'
+                  ? 'bg-surface text-foreground shadow-xs'
+                  : 'text-muted hover:text-foreground'
+              }`}
+              aria-label="List view"
+              aria-pressed={viewMode === 'list'}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
         </div>
       </div>
 
@@ -170,7 +165,7 @@ export function FilterBar({
             value={selectedLocation}
             onChange={(e) => onLocationChange(e.target.value)}
             aria-label="Filter by location"
-            className="w-full h-8 appearance-none pl-2.5 pr-6 text-base bg-surface border border-border rounded-md text-foreground focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors cursor-pointer"
+            className="w-full h-11 appearance-none pl-3 pr-8 text-base bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors cursor-pointer"
           >
             <option value="">All locations</option>
             {locations.map((location) => (
@@ -180,7 +175,7 @@ export function FilterBar({
             ))}
           </select>
           <svg
-            className="absolute right-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted pointer-events-none"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -195,7 +190,7 @@ export function FilterBar({
             value={sortBy}
             onChange={(e) => onSortChange(e.target.value as SortOption)}
             aria-label="Sort by"
-            className="w-full h-8 appearance-none pl-2.5 pr-6 text-base bg-surface border border-border rounded-md text-foreground focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors cursor-pointer"
+            className="w-full h-11 appearance-none pl-3 pr-8 text-base bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors cursor-pointer"
           >
             {SORT_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
@@ -204,7 +199,7 @@ export function FilterBar({
             ))}
           </select>
           <svg
-            className="absolute right-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted pointer-events-none"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -214,10 +209,10 @@ export function FilterBar({
         </div>
 
         {/* View Toggle */}
-        <div className="flex items-center gap-0.5 p-0.5 bg-surface-2 rounded-md border border-border flex-shrink-0">
+        <div className="flex items-center gap-1 p-1 bg-surface-2 rounded-lg border border-border flex-shrink-0">
           <button
             onClick={() => onViewModeChange('grid')}
-            className={`p-1.5 rounded transition-colors ${
+            className={`p-2 rounded-md transition-colors ${
               viewMode === 'grid'
                 ? 'bg-surface text-foreground shadow-xs'
                 : 'text-muted hover:text-foreground'
@@ -225,13 +220,13 @@ export function FilterBar({
             aria-label="Grid view"
             aria-pressed={viewMode === 'grid'}
           >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
             </svg>
           </button>
           <button
             onClick={() => onViewModeChange('list')}
-            className={`p-1.5 rounded transition-colors ${
+            className={`p-2 rounded-md transition-colors ${
               viewMode === 'list'
                 ? 'bg-surface text-foreground shadow-xs'
                 : 'text-muted hover:text-foreground'
@@ -239,7 +234,7 @@ export function FilterBar({
             aria-label="List view"
             aria-pressed={viewMode === 'list'}
           >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
