@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { Photo } from '@/types'
 import { getPhotoLabel, getBlurDataURL } from '@/lib/utils'
 import { PhotoLightbox } from './PhotoLightbox'
+import { ImagePlaceholderIcon } from '@/components/ui/Icons'
 
 interface PhotoTimelineProps {
   photos: Photo[]
@@ -14,10 +15,15 @@ interface PhotoTimelineProps {
 export function PhotoTimeline({ photos, plantName }: PhotoTimelineProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [failedImages, setFailedImages] = useState<Set<string>>(new Set())
 
   const handlePhotoClick = (index: number) => {
     setCurrentIndex(index)
     setLightboxOpen(true)
+  }
+
+  const handleImageError = (photoId: string) => {
+    setFailedImages(prev => new Set(prev).add(photoId))
   }
 
   if (photos.length === 0) {
@@ -55,16 +61,23 @@ export function PhotoTimeline({ photos, plantName }: PhotoTimelineProps) {
                 <div className="relative aspect-square overflow-hidden rounded-xl bg-surface
                                ring-1 ring-border/50 transition-all duration-150
                                group-hover:ring-border group-hover:shadow-lg group-hover:shadow-black/10">
-                  <Image
-                    src={photo.photo_url}
-                    alt={`${plantName} - ${label}`}
-                    fill
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-                    placeholder="blur"
-                    blurDataURL={getBlurDataURL()}
-                    className="object-cover transition-transform duration-300
-                               group-hover:scale-105"
-                  />
+                  {!failedImages.has(photo.id) ? (
+                    <Image
+                      src={photo.photo_url}
+                      alt={`${plantName} - ${label}`}
+                      fill
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                      placeholder="blur"
+                      blurDataURL={getBlurDataURL()}
+                      onError={() => handleImageError(photo.id)}
+                      className="object-cover transition-transform duration-300
+                                 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-muted">
+                      <ImagePlaceholderIcon className="w-8 h-8 opacity-50" />
+                    </div>
+                  )}
                 </div>
 
                 {/* Label below image */}

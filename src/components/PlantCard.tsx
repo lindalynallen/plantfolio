@@ -1,9 +1,11 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Plant } from '@/types'
 import { getPlantDisplayName, getBlurDataURL, formatRelativeDate } from '@/lib/utils'
+import { ImagePlaceholderIcon } from '@/components/ui/Icons'
 
 interface PlantCardProps {
   plant: Plant
@@ -20,6 +22,7 @@ export function PlantCard({
   lastUpdated,
   priority = false
 }: PlantCardProps) {
+  const [imageError, setImageError] = useState(false)
   const displayName = getPlantDisplayName(plant)
   const relativeDate = formatRelativeDate(lastUpdated)
 
@@ -28,7 +31,7 @@ export function PlantCard({
       <article className="overflow-hidden rounded-lg bg-surface border border-border transition-all duration-150 hover:border-border-hover hover:bg-surface-2">
         {/* Image - square aspect ratio for better plant display */}
         <div className="relative aspect-square bg-background overflow-hidden">
-          {thumbnailUrl ? (
+          {thumbnailUrl && !imageError ? (
             <Image
               src={thumbnailUrl}
               alt={displayName}
@@ -37,13 +40,12 @@ export function PlantCard({
               placeholder="blur"
               blurDataURL={getBlurDataURL()}
               priority={priority}
+              onError={() => setImageError(true)}
               className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
           ) : (
             <div className="flex items-center justify-center h-full text-muted">
-              <svg className="w-8 h-8 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
+              <ImagePlaceholderIcon className="w-8 h-8 opacity-50" />
             </div>
           )}
 

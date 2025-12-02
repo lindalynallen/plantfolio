@@ -1,9 +1,11 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Plant } from '@/types'
 import { getPlantDisplayName, getBlurDataURL, formatRelativeDate } from '@/lib/utils'
+import { ImagePlaceholderIcon } from '@/components/ui/Icons'
 
 interface PlantWithMeta extends Plant {
   thumbnailUrl: string | null
@@ -38,6 +40,7 @@ export function PlantListView({ plants }: PlantListViewProps) {
 }
 
 function PlantRow({ plant }: { plant: PlantWithMeta }) {
+  const [imageError, setImageError] = useState(false)
   const displayName = getPlantDisplayName(plant)
   const relativeDate = formatRelativeDate(plant.lastUpdated)
 
@@ -50,7 +53,7 @@ function PlantRow({ plant }: { plant: PlantWithMeta }) {
       <div className="flex items-center gap-3 min-w-0 flex-1 sm:flex-none">
         {/* Thumbnail - larger */}
         <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-background flex-shrink-0">
-          {plant.thumbnailUrl ? (
+          {plant.thumbnailUrl && !imageError ? (
             <Image
               src={plant.thumbnailUrl}
               alt={displayName}
@@ -58,13 +61,12 @@ function PlantRow({ plant }: { plant: PlantWithMeta }) {
               sizes="48px"
               placeholder="blur"
               blurDataURL={getBlurDataURL()}
+              onError={() => setImageError(true)}
               className="object-cover"
             />
           ) : (
             <div className="flex items-center justify-center h-full text-muted">
-              <svg className="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
+              <ImagePlaceholderIcon className="w-5 h-5 opacity-50" />
             </div>
           )}
         </div>

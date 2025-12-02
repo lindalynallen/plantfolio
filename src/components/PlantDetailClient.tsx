@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Plant, Photo } from '@/types'
 import { getPlantDisplayName, getBlurDataURL, formatShortDate, formatRelativeDate } from '@/lib/utils'
 import { PhotoLightbox } from './PhotoLightbox'
+import { ImagePlaceholderIcon } from '@/components/ui/Icons'
 
 interface PlantDetailClientProps {
   plant: Plant
@@ -15,8 +16,13 @@ interface PlantDetailClientProps {
 export function PlantDetailClient({ plant, photos }: PlantDetailClientProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [failedImages, setFailedImages] = useState<Set<string>>(new Set())
 
   const displayName = getPlantDisplayName(plant)
+
+  const handleImageError = (photoId: string) => {
+    setFailedImages(prev => new Set(prev).add(photoId))
+  }
 
   const openLightbox = (index: number) => {
     setCurrentIndex(index)
@@ -97,18 +103,25 @@ export function PlantDetailClient({ plant, photos }: PlantDetailClientProps) {
                   className="col-span-2 row-span-2 group cursor-pointer"
                 >
                   <div className="relative aspect-square h-full overflow-hidden rounded-lg bg-surface border border-border transition-all duration-150 hover:border-border-hover">
-                    <Image
-                      src={featuredPhoto.photo_url}
-                      alt={`${displayName}`}
-                      fill
-                      priority
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 66vw, 40vw"
-                      placeholder="blur"
-                      blurDataURL={getBlurDataURL()}
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
+                    {!failedImages.has(featuredPhoto.id) ? (
+                      <Image
+                        src={featuredPhoto.photo_url}
+                        alt={`${displayName}`}
+                        fill
+                        priority
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 66vw, 40vw"
+                        placeholder="blur"
+                        blurDataURL={getBlurDataURL()}
+                        onError={() => handleImageError(featuredPhoto.id)}
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-muted">
+                        <ImagePlaceholderIcon className="w-12 h-12 opacity-50" />
+                      </div>
+                    )}
                     {/* Date label */}
-                    {featuredPhoto.planta_last_updated && (
+                    {featuredPhoto.planta_last_updated && !failedImages.has(featuredPhoto.id) && (
                       <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4">
                         <span className="inline-block px-2 py-1 text-xs sm:text-sm font-medium bg-black/70 backdrop-blur-sm text-white rounded-md">
                           {formatShortDate(featuredPhoto.planta_last_updated)}
@@ -127,17 +140,24 @@ export function PlantDetailClient({ plant, photos }: PlantDetailClientProps) {
                   className="group cursor-pointer"
                 >
                   <div className="relative aspect-square overflow-hidden rounded-lg bg-surface border border-border transition-all duration-150 hover:border-border-hover">
-                    <Image
-                      src={photo.photo_url}
-                      alt={`${displayName}`}
-                      fill
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-                      placeholder="blur"
-                      blurDataURL={getBlurDataURL()}
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
+                    {!failedImages.has(photo.id) ? (
+                      <Image
+                        src={photo.photo_url}
+                        alt={`${displayName}`}
+                        fill
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                        placeholder="blur"
+                        blurDataURL={getBlurDataURL()}
+                        onError={() => handleImageError(photo.id)}
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-muted">
+                        <ImagePlaceholderIcon className="w-8 h-8 opacity-50" />
+                      </div>
+                    )}
                     {/* Date label */}
-                    {photo.planta_last_updated && (
+                    {photo.planta_last_updated && !failedImages.has(photo.id) && (
                       <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3">
                         <span className="inline-block px-2 py-1 text-xs font-medium bg-black/70 backdrop-blur-sm text-white rounded-md">
                           {formatShortDate(photo.planta_last_updated)}
@@ -151,9 +171,7 @@ export function PlantDetailClient({ plant, photos }: PlantDetailClientProps) {
           ) : (
             <div className="text-center py-20">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-surface-2 mb-5">
-                <svg className="w-8 h-8 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
+                <ImagePlaceholderIcon className="w-8 h-8 text-muted" />
               </div>
               <p className="text-lg text-muted">No photos yet</p>
             </div>

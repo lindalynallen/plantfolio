@@ -45,10 +45,13 @@ describe('PlantCard', () => {
     expect(image).toBeInTheDocument()
   })
 
-  it('shows "No photo" fallback when thumbnailUrl is null', () => {
+  it('shows placeholder when thumbnailUrl is null', () => {
     render(<PlantCard {...defaultProps} thumbnailUrl={null} />)
 
-    expect(screen.getByText('No photo')).toBeInTheDocument()
+    // No image should be rendered
+    expect(screen.queryByRole('img')).not.toBeInTheDocument()
+    // SVG placeholder should be visible (check for the container)
+    expect(document.querySelector('svg.w-8.h-8')).toBeInTheDocument()
   })
 
   it('link points to correct plant detail page', () => {

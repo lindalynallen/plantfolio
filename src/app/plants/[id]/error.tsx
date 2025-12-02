@@ -10,19 +10,19 @@ export default function Error({
   reset: () => void
 }) {
   return (
-    <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+    <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
       <div className="max-w-2xl mx-auto text-center">
-        <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
-          Oops! Something went wrong
+        <h1 className="text-4xl sm:text-5xl font-semibold text-foreground mb-4">
+          Couldn&apos;t load plant
         </h1>
 
         <p className="text-lg text-muted mb-6">
-          We couldn't load this plant's details.
+          We ran into a problem loading this plant&apos;s details.
         </p>
 
         {error.message && (
           <div className="bg-surface border border-border rounded-lg p-4 mb-8 text-left">
-            <p className="text-sm text-muted font-mono">
+            <p className="text-sm text-muted font-mono break-words">
               {error.message}
             </p>
           </div>
