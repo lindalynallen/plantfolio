@@ -20,7 +20,6 @@
     --color-border-hover: 200 200 200;  /* Hover border */
     --color-muted: 100 100 100;         /* Secondary text - slightly darker for better contrast */
     --color-accent: 22 163 74;          /* Green accent */
-    --color-accent-muted: 34 139 34;    /* Accent at lower opacity */
   }
 
   @media (prefers-color-scheme: dark) {
@@ -34,7 +33,6 @@
       --color-border-hover: 63 63 70;     /* Hover border */
       --color-muted: 161 161 170;         /* Secondary text */
       --color-accent: 74 222 128;         /* Vibrant green accent */
-      --color-accent-muted: 34 197 94;    /* Softer accent */
     }
   }
 
@@ -89,31 +87,6 @@
     ::-webkit-scrollbar-thumb:hover {
       background: rgb(82 82 91);
     }
-  }
-}
-
-@layer components {
-  /* Data-dense card style */
-  .card {
-    @apply bg-surface border border-border rounded-lg transition-all duration-150;
-  }
-  .card:hover {
-    @apply border-border-hover bg-surface-2;
-  }
-
-  /* Badge styles - larger for better readability */
-  .badge {
-    @apply inline-flex items-center px-2.5 py-1 text-sm font-medium rounded-md bg-surface-2 text-muted;
-  }
-  .badge-accent {
-    @apply bg-accent/10 text-accent;
-  }
-
-  /* Touch-friendly input base */
-  .input-base {
-    @apply h-11 sm:h-10 text-base sm:text-sm bg-surface border border-border rounded-md text-foreground
-           placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent
-           transition-colors;
   }
 }
 

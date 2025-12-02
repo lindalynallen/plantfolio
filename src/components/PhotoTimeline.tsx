@@ -42,7 +42,7 @@ export function PhotoTimeline({ photos, plantName }: PhotoTimelineProps) {
         </div>
 
         {/* Clean photo grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
           {photos.map((photo, index) => {
             const label = getPhotoLabel(photo)
             return (
@@ -52,8 +52,8 @@ export function PhotoTimeline({ photos, plantName }: PhotoTimelineProps) {
                 className="group cursor-pointer"
               >
                 {/* Image container */}
-                <div className="relative aspect-square overflow-hidden rounded-xl sm:rounded-2xl bg-surface
-                               ring-1 ring-border/50 transition-all duration-300
+                <div className="relative aspect-square overflow-hidden rounded-xl bg-surface
+                               ring-1 ring-border/50 transition-all duration-150
                                group-hover:ring-border group-hover:shadow-lg group-hover:shadow-black/10">
                   <Image
                     src={photo.photo_url}
@@ -62,7 +62,7 @@ export function PhotoTimeline({ photos, plantName }: PhotoTimelineProps) {
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                     placeholder="blur"
                     blurDataURL={getBlurDataURL()}
-                    className="object-cover transition-transform duration-500 ease-out
+                    className="object-cover transition-transform duration-300
                                group-hover:scale-105"
                   />
                 </div>

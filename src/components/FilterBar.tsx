@@ -81,7 +81,7 @@ export function FilterBar({
             value={selectedLocation}
             onChange={(e) => onLocationChange(e.target.value)}
             aria-label="Filter by location"
-            className="h-10 appearance-none pl-3 pr-8 text-base bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors cursor-pointer"
+            className="h-11 sm:h-10 appearance-none pl-3 pr-8 text-base bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors cursor-pointer"
           >
             <option value="">All locations</option>
             {locations.map((location) => (
@@ -106,7 +106,7 @@ export function FilterBar({
             value={sortBy}
             onChange={(e) => onSortChange(e.target.value as SortOption)}
             aria-label="Sort by"
-            className="h-10 appearance-none pl-3 pr-8 text-base bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors cursor-pointer"
+            className="h-11 sm:h-10 appearance-none pl-3 pr-8 text-base bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors cursor-pointer"
           >
             {SORT_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>

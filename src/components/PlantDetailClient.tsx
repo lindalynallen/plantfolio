@@ -107,10 +107,10 @@ export function PlantDetailClient({ plant, photos }: PlantDetailClientProps) {
                       blurDataURL={getBlurDataURL()}
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
-                    {/* Date label - larger */}
+                    {/* Date label */}
                     {featuredPhoto.planta_last_updated && (
                       <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4">
-                        <span className="inline-block px-2.5 py-1 text-xs sm:text-sm font-medium bg-black/70 backdrop-blur-sm text-white rounded-md">
+                        <span className="inline-block px-2 py-1 text-xs sm:text-sm font-medium bg-black/70 backdrop-blur-sm text-white rounded-md">
                           {formatShortDate(featuredPhoto.planta_last_updated)}
                         </span>
                       </div>
@@ -139,7 +139,7 @@ export function PlantDetailClient({ plant, photos }: PlantDetailClientProps) {
                     {/* Date label */}
                     {photo.planta_last_updated && (
                       <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3">
-                        <span className="inline-block px-2 py-0.5 text-xs font-medium bg-black/70 backdrop-blur-sm text-white rounded-md">
+                        <span className="inline-block px-2 py-1 text-xs font-medium bg-black/70 backdrop-blur-sm text-white rounded-md">
                           {formatShortDate(photo.planta_last_updated)}
                         </span>
                       </div>

@@ -120,7 +120,7 @@ function ErrorMessage() {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
       <div className="max-w-2xl mx-auto text-center">
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground mb-4">
+        <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
           Couldn't load plants
         </h1>
         <p className="text-lg text-muted mb-8">

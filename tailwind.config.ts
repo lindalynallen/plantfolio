@@ -21,10 +21,7 @@ const config: Config = {
           hover: 'rgb(var(--color-border-hover) / <alpha-value>)',
         },
         muted: 'rgb(var(--color-muted) / <alpha-value>)',
-        accent: {
-          DEFAULT: 'rgb(var(--color-accent) / <alpha-value>)',
-          muted: 'rgb(var(--color-accent-muted) / <alpha-value>)',
-        },
+        accent: 'rgb(var(--color-accent) / <alpha-value>)',
       },
       fontFamily: {
         sans: [
@@ -67,9 +64,6 @@ const config: Config = {
       },
       boxShadow: {
         'xs': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-        'card': '0 1px 2px 0 rgb(0 0 0 / 0.05), 0 0 0 1px rgb(0 0 0 / 0.05)',
-        'card-hover': '0 4px 12px 0 rgb(0 0 0 / 0.1), 0 0 0 1px rgb(0 0 0 / 0.05)',
-        'elevated': '0 8px 24px -4px rgb(0 0 0 / 0.12), 0 0 0 1px rgb(0 0 0 / 0.05)',
       },
       keyframes: {
         fadeIn: {

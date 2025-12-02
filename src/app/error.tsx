@@ -12,7 +12,7 @@ export default function Error({
   return (
     <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
       <div className="max-w-2xl mx-auto text-center">
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground mb-4">
+        <h1 className="text-4xl sm:text-5xl font-semibold text-foreground mb-4">
           Something went wrong
         </h1>
 
