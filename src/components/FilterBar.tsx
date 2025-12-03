@@ -1,7 +1,17 @@
 'use client'
 
-export type SortOption = 'name' | 'updated' | 'photos'
+export type SortOption = 'name' | 'species' | 'location' | 'photos' | 'updated'
+export type SortDirection = 'asc' | 'desc'
 export type ViewMode = 'grid' | 'list'
+
+/** Default sort direction for each column (what makes sense on first click) */
+export const DEFAULT_SORT_DIRECTIONS: Record<SortOption, SortDirection> = {
+  name: 'asc',      // A→Z
+  species: 'asc',   // A→Z
+  location: 'asc',  // A→Z
+  photos: 'desc',   // Most photos first
+  updated: 'desc',  // Newest first
+}
 
 interface FilterBarProps {
   searchQuery: string
@@ -10,13 +20,15 @@ interface FilterBarProps {
   onLocationChange: (location: string) => void
   locations: string[]
   sortBy: SortOption
-  onSortChange: (sort: SortOption) => void
+  onSortChange: (sort: SortOption, direction?: SortDirection) => void
   viewMode: ViewMode
   onViewModeChange: (mode: ViewMode) => void
 }
 
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: 'name', label: 'Name' },
+  { value: 'species', label: 'Species' },
+  { value: 'location', label: 'Location' },
   { value: 'updated', label: 'Recently updated' },
   { value: 'photos', label: 'Photo count' },
 ]
@@ -32,6 +44,10 @@ export function FilterBar({
   viewMode,
   onViewModeChange,
 }: FilterBarProps) {
+  // When dropdown changes, use default direction for that sort type
+  const handleSortDropdownChange = (newSort: SortOption) => {
+    onSortChange(newSort, DEFAULT_SORT_DIRECTIONS[newSort])
+  }
   return (
     <div className="flex flex-col gap-3 w-full">
       {/* Row 1: Search only on mobile, Search + all filters on desktop */}
@@ -104,7 +120,7 @@ export function FilterBar({
         <div className="hidden sm:block relative">
           <select
             value={sortBy}
-            onChange={(e) => onSortChange(e.target.value as SortOption)}
+            onChange={(e) => handleSortDropdownChange(e.target.value as SortOption)}
             aria-label="Sort by"
             className="h-11 sm:h-10 appearance-none pl-3 pr-8 text-base bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors cursor-pointer"
           >
@@ -188,7 +204,7 @@ export function FilterBar({
         <div className="relative flex-1 min-w-0">
           <select
             value={sortBy}
-            onChange={(e) => onSortChange(e.target.value as SortOption)}
+            onChange={(e) => handleSortDropdownChange(e.target.value as SortOption)}
             aria-label="Sort by"
             className="w-full h-11 appearance-none pl-3 pr-8 text-base bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors cursor-pointer"
           >

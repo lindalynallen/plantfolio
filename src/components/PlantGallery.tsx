@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Plant, PlantWithMeta } from '@/types'
 import { PlantCard } from '@/components/PlantCard'
 import { PlantListView } from '@/components/PlantListView'
-import { FilterBar, SortOption, ViewMode } from '@/components/FilterBar'
+import { FilterBar, SortOption, SortDirection, ViewMode, DEFAULT_SORT_DIRECTIONS } from '@/components/FilterBar'
 import { getPlantDisplayName } from '@/lib/utils'
 
 interface PlantGalleryProps {
@@ -42,22 +42,42 @@ function plantMatchesLocation(plant: Plant, location: string): boolean {
 }
 
 /**
- * Sort plants based on sort option
+ * Sort plants based on sort option and direction
+ * Nulls always sort last regardless of direction
+ * @exported for testing
  */
-function sortPlants(plants: PlantWithMeta[], sortBy: SortOption): PlantWithMeta[] {
+export function sortPlants(plants: PlantWithMeta[], sortBy: SortOption, direction: SortDirection): PlantWithMeta[] {
+  const multiplier = direction === 'desc' ? -1 : 1
+
   return [...plants].sort((a, b) => {
     switch (sortBy) {
       case 'name':
-        return getPlantDisplayName(a).localeCompare(getPlantDisplayName(b))
+        return multiplier * getPlantDisplayName(a).localeCompare(getPlantDisplayName(b))
+
+      case 'species':
+        // Nulls always last
+        if (!a.scientific_name && !b.scientific_name) return 0
+        if (!a.scientific_name) return 1
+        if (!b.scientific_name) return -1
+        return multiplier * a.scientific_name.localeCompare(b.scientific_name)
+
+      case 'location':
+        // Nulls always last
+        if (!a.location && !b.location) return 0
+        if (!a.location) return 1
+        if (!b.location) return -1
+        return multiplier * a.location.localeCompare(b.location)
+
+      case 'photos':
+        return multiplier * (a.photoCount - b.photoCount)
+
       case 'updated':
-        // Most recently updated first, nulls last
+        // Nulls always last
         if (!a.lastUpdated && !b.lastUpdated) return 0
         if (!a.lastUpdated) return 1
         if (!b.lastUpdated) return -1
-        return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()
-      case 'photos':
-        // Most photos first
-        return b.photoCount - a.photoCount
+        return multiplier * (new Date(a.lastUpdated).getTime() - new Date(b.lastUpdated).getTime())
+
       default:
         return 0
     }
@@ -71,8 +91,34 @@ export function PlantGallery({ plants, stats, locations }: PlantGalleryProps) {
   // Initialize state from URL
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '')
   const [selectedLocation, setSelectedLocation] = useState(searchParams.get('location') || '')
-  const [sortBy, setSortBy] = useState<SortOption>((searchParams.get('sort') as SortOption) || 'name')
+  const [sortBy, setSortBy] = useState<SortOption>(() => {
+    const urlSort = searchParams.get('sort') as SortOption
+    return ['name', 'species', 'location', 'photos', 'updated'].includes(urlSort) ? urlSort : 'name'
+  })
+  const [sortDirection, setSortDirection] = useState<SortDirection>(() => {
+    const urlDir = searchParams.get('dir') as SortDirection
+    if (urlDir === 'asc' || urlDir === 'desc') return urlDir
+    // Use default direction for the initial sort
+    const initialSort = searchParams.get('sort') as SortOption || 'name'
+    return DEFAULT_SORT_DIRECTIONS[initialSort] || 'asc'
+  })
   const [viewMode, setViewMode] = useState<ViewMode>((searchParams.get('view') as ViewMode) || 'grid')
+
+  // Handle sort change from FilterBar dropdown or list column headers
+  const handleSortChange = (newSort: SortOption, newDirection?: SortDirection) => {
+    if (newDirection !== undefined) {
+      // Explicit direction provided (from dropdown or column click)
+      setSortBy(newSort)
+      setSortDirection(newDirection)
+    } else if (newSort === sortBy) {
+      // Same column clicked - toggle direction
+      setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')
+    } else {
+      // Different column - use default direction
+      setSortBy(newSort)
+      setSortDirection(DEFAULT_SORT_DIRECTIONS[newSort])
+    }
+  }
 
   // Keep URL in sync with state
   useEffect(() => {
@@ -80,20 +126,21 @@ export function PlantGallery({ plants, stats, locations }: PlantGalleryProps) {
     if (searchQuery) params.set('search', searchQuery)
     if (selectedLocation) params.set('location', selectedLocation)
     if (sortBy !== 'name') params.set('sort', sortBy)
+    if (sortDirection !== DEFAULT_SORT_DIRECTIONS[sortBy]) params.set('dir', sortDirection)
     if (viewMode !== 'grid') params.set('view', viewMode)
 
     const queryString = params.toString()
     const newUrl = queryString ? `?${queryString}` : '/'
     router.replace(newUrl, { scroll: false })
-  }, [searchQuery, selectedLocation, sortBy, viewMode, router])
+  }, [searchQuery, selectedLocation, sortBy, sortDirection, viewMode, router])
 
   // Filter and sort plants
   const processedPlants = useMemo(() => {
     const filtered = plants.filter((plant) => {
       return plantMatchesSearch(plant, searchQuery) && plantMatchesLocation(plant, selectedLocation)
     })
-    return sortPlants(filtered, sortBy)
-  }, [plants, searchQuery, selectedLocation, sortBy])
+    return sortPlants(filtered, sortBy, sortDirection)
+  }, [plants, searchQuery, selectedLocation, sortBy, sortDirection])
 
   const hasActiveFilters = searchQuery || selectedLocation
   const clearFilters = () => {
@@ -145,7 +192,7 @@ export function PlantGallery({ plants, stats, locations }: PlantGalleryProps) {
           onLocationChange={setSelectedLocation}
           locations={locations}
           sortBy={sortBy}
-          onSortChange={setSortBy}
+          onSortChange={handleSortChange}
           viewMode={viewMode}
           onViewModeChange={setViewMode}
         />
@@ -167,7 +214,12 @@ export function PlantGallery({ plants, stats, locations }: PlantGalleryProps) {
             ))}
           </div>
         ) : (
-          <PlantListView plants={processedPlants} />
+          <PlantListView
+            plants={processedPlants}
+            sortBy={sortBy}
+            sortDirection={sortDirection}
+            onSortChange={handleSortChange}
+          />
         )
       ) : (
         <EmptyState onClearFilters={clearFilters} />

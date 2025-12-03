@@ -63,24 +63,28 @@ curl -X POST http://localhost:3000/api/sync \
 
 - **Display name:** `custom_name || localized_name` (custom takes priority)
 - **Photo sorting:** `ORDER BY planta_last_updated DESC NULLS LAST, display_order ASC`
+- **Plant sorting:** 5 columns (name, species, location, photos, updated) with asc/desc; nulls always last
 
 ## Testing
 
 **Framework:** Vitest 4.0 + React Testing Library
 
-### Current Coverage (~57%)
+### Current Coverage
 
-| Area | Tests | Coverage |
-|------|-------|----------|
-| Components (`PlantCard`, `PlantDetailClient`) | 32 | 93% |
-| Utilities (`src/lib/utils.ts`) | 8 | 67% |
-| API Routes (`/api/sync`) | 5 | 33% |
+| Area | Tests | Notes |
+|------|-------|-------|
+| Components (`PlantCard`, `PlantDetailClient`) | 32 | User-facing behavior |
+| PlantGallery (`sortPlants` function) | 22 | All columns, directions, null handling |
+| Utilities (`src/lib/utils.ts`) | 8 | Date formatting, photo sorting |
+| API Routes (`/api/sync`) | 5 | Success + error paths |
+
+**Total: 67 tests**
 
 ### Not Yet Tested
 
 - Error boundaries and error pages
 - Loading states and suspense fallbacks
-- Layout components (Header, FilterBar, PlantGallery)
+- Layout components (Header, FilterBar)
 - Lightbox navigation and keyboard controls
 - Client-side filtering and search
 
