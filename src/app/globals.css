@@ -90,25 +90,3 @@
   }
 }
 
-@layer utilities {
-  /* Frosted glass effect for header */
-  .frosted-glass {
-    @apply bg-background/80 backdrop-blur-xl border-b border-border;
-  }
-
-  /* Text utilities */
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  /* Tabular numbers for data */
-  .tabular-nums {
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* Minimum touch target size - 44px per Apple HIG */
-  .touch-target {
-    min-height: 44px;
-    min-width: 44px;
-  }
-}

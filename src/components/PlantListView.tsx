@@ -3,15 +3,9 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Plant } from '@/types'
+import { PlantWithMeta } from '@/types'
 import { getPlantDisplayName, getBlurDataURL, formatRelativeDate } from '@/lib/utils'
 import { ImagePlaceholderIcon } from '@/components/ui/Icons'
-
-interface PlantWithMeta extends Plant {
-  thumbnailUrl: string | null
-  photoCount: number
-  lastUpdated: string | null
-}
 
 interface PlantListViewProps {
   plants: PlantWithMeta[]

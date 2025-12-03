@@ -51,10 +51,6 @@ const config: Config = {
         '2xl': ['1.5rem', { lineHeight: '2rem' }],         // 24px
         '3xl': ['1.875rem', { lineHeight: '2.25rem' }],    // 30px
       },
-      spacing: {
-        '18': '4.5rem',
-        '88': '22rem',
-      },
       borderRadius: {
         'sm': '0.375rem',  // 6px
         'DEFAULT': '0.5rem', // 8px
@@ -64,20 +60,6 @@ const config: Config = {
       },
       boxShadow: {
         'xs': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-      },
-      keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0', transform: 'translateY(4px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-        slideIn: {
-          '0%': { opacity: '0', transform: 'translateX(-4px)' },
-          '100%': { opacity: '1', transform: 'translateX(0)' },
-        },
-      },
-      animation: {
-        'fadeIn': 'fadeIn 0.2s ease-out forwards',
-        'slideIn': 'slideIn 0.15s ease-out forwards',
       },
     },
   },

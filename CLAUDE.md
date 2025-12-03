@@ -6,80 +6,109 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Plantfolio is a personal plant gallery website showcasing 54+ houseplants with historical photos and automated sync from the Planta mobile app API.
 
-**Tech Stack:** Next.js, TypeScript, Tailwind CSS, Supabase (PostgreSQL + Storage)
+**Tech Stack:** Next.js 16, React 19, TypeScript, Tailwind CSS, Supabase (PostgreSQL + Storage)
 
-**Current Status:** EPICs 1-5 complete (Backend, Frontend, Planta API Sync)
+**Status:** EPICs 1-6 complete (Backend, Frontend, Planta API Sync, Deployed)
 
-## Commands
+## Quick Reference
+
+### Development
 
 ```bash
 npm run dev              # Start dev server (http://localhost:3000)
 npm run build            # Build for production
+npm run lint             # Run ESLint
+```
+
+### Testing
+
+```bash
+npm test                 # Watch mode
+npm run test:run         # Single run (CI mode)
+npm run test:coverage    # Coverage report
+npm run test:ui          # Visual dashboard
+```
+
+### Data Scripts
+
+```bash
 npm run insert-plants    # Insert plants from Planta API JSON (idempotent)
 npm run backfill         # Upload historical photos (idempotent)
 npm run backfill:test    # Test backfill on 3 sample folders
-npm test                 # Run tests in watch mode
-npm run test:run         # Run tests once (CI mode)
-npm run test:coverage    # Generate coverage report
-npm run test:ui          # Open Vitest UI
 ```
 
-## API Endpoints
-
-### Sync Planta Photos
-
-Manually sync new photos from Planta API (requires authentication):
+### Sync API
 
 ```bash
-# Local
+# Trigger photo sync (requires SYNC_API_KEY env var)
 curl -X POST http://localhost:3000/api/sync \
   -H "Authorization: Bearer $SYNC_API_KEY"
-
-# Production (after deployment)
-curl -X POST https://your-site.vercel.app/api/sync \
-  -H "Authorization: Bearer $SYNC_API_KEY"
 ```
 
-**Authentication:** The endpoint requires a Bearer token set in the `SYNC_API_KEY` environment variable. This protects against unauthorized access and abuse.
-
-**Response:**
-```json
-{
-  "success": true,
-  "plants_synced": 54,
-  "photos_added": 3,
-  "errors": []
-}
-```
-
-**How it works:**
-- Fetches all plants from Planta API with pagination
-- Inserts new plants (if any)
+**How sync works:**
+- Fetches all plants from Planta API (paginated)
+- Detects new photos by comparing `planta_image_url` — only downloads if URL changed
+- Uploads new photos to Supabase Storage (`planta/` folder)
+- Auto-refreshes access token if <1 hour remaining
 - Never overwrites existing plant data
-- Detects new photos via `planta_image_url` comparison
-- Downloads and uploads new photos to Supabase Storage
-- Automatically refreshes access token if <1 hour remaining
-- Returns summary with counts and any errors
 
 ## Architecture
 
-**Database:** 3 tables in Supabase - `plants`, `photos`, `sync_tokens`
+### Database (Supabase)
 
-**Storage:** Public bucket `plant-photos` with folders: `historical/` and `planta/`
+- **Tables:** `plants`, `photos`, `sync_tokens`
+- **Storage:** Public bucket `plant-photos` with `historical/` and `planta/` folders
 
-**Display name logic:** `custom_name || localized_name` (custom takes priority)
+### Key Logic
 
-**Photo sorting:** `ORDER BY planta_last_updated DESC NULLS LAST, display_order ASC`
+- **Display name:** `custom_name || localized_name` (custom takes priority)
+- **Photo sorting:** `ORDER BY planta_last_updated DESC NULLS LAST, display_order ASC`
 
-## Commit Message Convention
+## Testing
 
-Follow conventional commits with these prefixes:
+**Framework:** Vitest 4.0 + React Testing Library
 
-- `feat: complete EPIC N - Description` - For EPIC milestones
-- `feat: description` - New features
-- `refactor: description` - Code restructuring
-- `polish: description` - UI/UX improvements
-- `docs: description` - Documentation changes
-- `fix: description` - Bug fixes
-- `test: description` - Test additions or changes
+### Current Coverage (~57%)
 
+| Area | Tests | Coverage |
+|------|-------|----------|
+| Components (`PlantCard`, `PlantDetailClient`) | 32 | 93% |
+| Utilities (`src/lib/utils.ts`) | 8 | 67% |
+| API Routes (`/api/sync`) | 5 | 33% |
+
+### Not Yet Tested
+
+- Error boundaries and error pages
+- Loading states and suspense fallbacks
+- Layout components (Header, FilterBar, PlantGallery)
+- Lightbox navigation and keyboard controls
+- Client-side filtering and search
+
+### Test File Locations
+
+```
+src/__tests__/
+├── api/          # API route tests
+├── components/   # Component tests
+└── lib/          # Utility function tests
+```
+
+### Testing Guidelines
+
+- Utilities: aim for >80% coverage (pure functions)
+- API routes: test success + error paths
+- Components: test user-facing behavior, not implementation
+- Mock Supabase in unit tests
+
+## Commit Convention
+
+```
+feat: description      # New features
+fix: description       # Bug fixes
+refactor: description  # Code restructuring
+polish: description    # UI/UX improvements
+docs: description      # Documentation
+test: description      # Test changes
+```
+
+For EPIC milestones: `feat: complete EPIC N - Description`

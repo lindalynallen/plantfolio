@@ -30,7 +30,6 @@ Quick reference for all error, loading, and empty states in Plantfolio.
 |-------|----------|---------|
 | **No search results** | `PlantGallery.tsx` → `EmptyState` | Filter/search with no matches |
 | **No photos (detail)** | `PlantDetailClient.tsx` | Plant with zero photos |
-| **No photos (timeline)** | `PhotoTimeline.tsx` | Timeline with zero photos |
 
 ## Image Fallbacks
 
@@ -41,7 +40,6 @@ When images fail to load, components show the `ImagePlaceholderIcon` from `src/c
 | `PlantCard` | Thumbnail missing or failed to load |
 | `PlantListView` | Row thumbnail missing or failed to load |
 | `PlantDetailClient` | Any photo in grid failed to load |
-| `PhotoTimeline` | Any photo in timeline failed to load |
 
 ---
 

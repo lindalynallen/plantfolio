@@ -16,6 +16,16 @@ export interface Plant {
   updated_at: string
 }
 
+/**
+ * Plant with computed display metadata
+ * Used by gallery components for rendering
+ */
+export interface PlantWithMeta extends Plant {
+  thumbnailUrl: string | null
+  photoCount: number
+  lastUpdated: string | null
+}
+
 export interface Photo {
   id: string
   plant_id: string
@@ -27,14 +37,6 @@ export interface Photo {
   display_order: number | null
   taken_at: string | null
   created_at: string
-}
-
-export interface SyncToken {
-  id: number
-  access_token: string
-  refresh_token: string
-  expires_at: string
-  updated_at: string
 }
 
 /**

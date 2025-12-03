@@ -2,7 +2,7 @@ import { SVGProps } from 'react'
 
 /**
  * Placeholder icon shown when an image is missing or fails to load.
- * Used across PlantCard, PlantListView, PlantDetailClient, and PhotoTimeline.
+ * Used across PlantCard, PlantListView, and PlantDetailClient.
  */
 export function ImagePlaceholderIcon(props: SVGProps<SVGSVGElement>) {
   return (
@@ -16,5 +16,4 @@ export function ImagePlaceholderIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   )
 }
-
 

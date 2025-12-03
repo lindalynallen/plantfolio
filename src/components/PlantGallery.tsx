@@ -2,17 +2,11 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Plant } from '@/types'
+import { Plant, PlantWithMeta } from '@/types'
 import { PlantCard } from '@/components/PlantCard'
 import { PlantListView } from '@/components/PlantListView'
 import { FilterBar, SortOption, ViewMode } from '@/components/FilterBar'
 import { getPlantDisplayName } from '@/lib/utils'
-
-interface PlantWithMeta extends Plant {
-  thumbnailUrl: string | null
-  photoCount: number
-  lastUpdated: string | null
-}
 
 interface PlantGalleryProps {
   plants: PlantWithMeta[]

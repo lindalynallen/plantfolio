@@ -136,7 +136,7 @@ src/
 │   └── api/sync/route.ts     # Protected sync endpoint
 ├── components/
 │   ├── PlantCard.tsx         # Gallery thumbnail card
-│   ├── PhotoTimeline.tsx     # Chronological photo grid
+│   ├── PlantDetailClient.tsx # Plant detail page with photo grid
 │   └── PhotoLightbox.tsx     # Full-screen viewer
 ├── lib/
 │   ├── planta-api.ts         # API client with retry logic
